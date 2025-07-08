@@ -3,13 +3,13 @@ import React from "react";
 import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
-import PageLoader from "./components/PageLoader";
+import Posts from "./components/posts";
 
 const App = () => (
   <Router>
     <ToastContainer />
     <Switch>
-      <Route exact component={PageLoader} path="/" />
+      <Route exact component={Posts} path="/" />
     </Switch>
   </Router>
 );
