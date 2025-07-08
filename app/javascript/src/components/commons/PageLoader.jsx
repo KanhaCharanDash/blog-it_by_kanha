@@ -1,12 +1,20 @@
 import React from "react";
 
-import { Button } from "@bigbinary/neetoui";
+import { Spinner } from "@bigbinary/neetoui";
+import classnames from "classnames";
 
-const App = () => (
-  <div className="p-6">
-    <h1 className="text-2xl font-bold">Hello</h1>
-    <Button label="Click me" style="primary" />
+const PageLoader = ({ className = "" }) => (
+  <div
+    className={classnames(
+      [className],
+      "flex h-screen w-screen flex-row items-center justify-center"
+    )}
+  >
+    <div className="flex h-20 w-20 items-center justify-center">
+      <Spinner />
+    </div>
+    <h1 className="text-lg leading-5">Loading...</h1>
   </div>
 );
 
-export default App;
+export default PageLoader;
