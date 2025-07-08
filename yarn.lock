@@ -971,15 +971,15 @@
   resolved "https://registry.yarnpkg.com/@bigbinary/neeto-cist/-/neeto-cist-1.0.15.tgz#d21e081ae4a28d7855d608926a516b0db894b4b6"
   integrity sha512-cxRYzZLMsXLcAzpgrj5hJB6BhqJDvmBPF0HU/BUT2WvRbQtzxECF6Cu/68E9iglALAmz0no/uzeUd10dtRvTDQ==
 
-"@bigbinary/neeto-icons@1.17.6":
-  version "1.17.6"
-  resolved "https://registry.yarnpkg.com/@bigbinary/neeto-icons/-/neeto-icons-1.17.6.tgz#6e409b70a5056dd95e1b10ae2030566333826595"
-  integrity sha512-D+1o+r73sjV1kZNswMX96gPScrz5hhKCji7Xr+IngLTfJhV1AqXyYms7k0pUm59wOHfqx6eUeVsbPP+l1st7Yg==
+"@bigbinary/neeto-icons@^1.20.52":
+  version "1.20.52"
+  resolved "https://registry.yarnpkg.com/@bigbinary/neeto-icons/-/neeto-icons-1.20.52.tgz#928470ebe6ea5559334baf31c9d6e96972484599"
+  integrity sha512-7OvbyfM9uiYQ9WS4UmIpcoiuAyUhIXUwLX/DWp6JXSGI+uXMsPyIv+lS2TEJDkHpYbvlYrfEN4SmclEDF35qWQ==
 
-"@bigbinary/neetoui@5.2.41":
-  version "5.2.41"
-  resolved "https://registry.yarnpkg.com/@bigbinary/neetoui/-/neetoui-5.2.41.tgz#4d2da0f858e7ab41520707b054defd6d1c17d18a"
-  integrity sha512-Nh21TGSpzkvPQQ+6v/T9TL/LVfON2tzcT4wK5P5BftdpaAjLbNbRCS9+la8XoDWBV+9dxE+Jgsr95ZODX65X4w==
+"@bigbinary/neetoui@^8.3.12":
+  version "8.3.12"
+  resolved "https://registry.yarnpkg.com/@bigbinary/neetoui/-/neetoui-8.3.12.tgz#1dd6bc8318a0f512ea571210600db7336249e0ec"
+  integrity sha512-Vf2HlQRk1C2fGTrEfeEvpe7QZrr11bjh3euML122r9o0tyszeibYXzYzo3UuZU6h6JSYHUDDyjJIzCyk+jgApA==
 
 "@csstools/postcss-cascade-layers@^1.1.0":
   version "1.1.1"
@@ -5970,6 +5970,11 @@ react-fast-compare@^2.0.1:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-2.0.4.tgz#e84b4d455b0fec113e0402c329352715196f81f9"
   integrity sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==
+
+react-icons@^5.5.0:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-5.5.0.tgz#8aa25d3543ff84231685d3331164c00299cdfaf2"
+  integrity sha512-MEFcXdkP3dLo8uumGI5xN3lDFNsRtrjbOEKDLD7yv76v4wpnEq2Lt2qeHaQOr34I/wPN3s3+N08WkQ+CW37Xiw==
 
 react-is@^16.13.1, react-is@^16.6.0, react-is@^16.7.0:
   version "16.13.1"
