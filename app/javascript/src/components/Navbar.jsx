@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import classNames from "classnames";
-import { RiMenuLine, RiBookLine } from "react-icons/ri";
+import { RiMenuLine, RiBookLine, RiFileAddLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
@@ -55,7 +55,14 @@ const Navbar = () => {
             <RiBookLine />
             <span>Blog Posts</span>
           </Link>
-          <span className="cursor-not-allowed text-gray-400">Coming Soon</span>
+          {/* New Post Link */}
+          <Link
+            className="flex items-center space-x-2 text-gray-800 hover:text-blue-600"
+            to="/posts/new"
+          >
+            <RiFileAddLine />
+            <span>New Post</span>
+          </Link>
         </nav>
       </div>
     </>
