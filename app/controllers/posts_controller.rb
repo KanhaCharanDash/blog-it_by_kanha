@@ -5,4 +5,14 @@ class PostsController < ApplicationController
     @posts = Post.all
     render json: { posts: @posts }
    end
+
+  def create
+    post = Post.new(post_params)
+    post.save!
+    render_notice("Post was successfully created")
+end
+
+  def post_params
+    params.require(:post).permit(:title, :description)
+  end
 end

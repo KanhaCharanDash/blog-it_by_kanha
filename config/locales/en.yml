@@ -28,6 +28,9 @@
 #       enabled: "ON"
 
 en:
+  en:
+  # rest of the translations
+  generic_error: "Something went wrong. Please try again later."
   post:
     slug:
       immutable: "is immutable!"
