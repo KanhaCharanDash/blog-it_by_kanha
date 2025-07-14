@@ -6,5 +6,5 @@ Rails.application.routes.draw do
   resources :categories, only: [:index, :create]
 
   root "home#index"
-  get "*path", to: "home#index", via: :all
+  get "*path", to: "home#index", constraints: ->(req) { req.format.html? }
 end

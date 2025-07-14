@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
 import classnames from "classnames";
-import { isNil, isEmpty, either } from "ramda";
+import { either, isEmpty, isNil } from "ramda";
 
 import PostCard from "./PostCard";
 
@@ -12,12 +12,12 @@ import NoDataPage from "../commons/NoDataPage";
 import PageLoader from "../commons/PageLoader";
 import Navbar from "../Navbar";
 import useCategoryStore from "../stores/useCategoryStore";
+import usePostStore from "../stores/usePostStore";
 
 const Posts = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { posts, setPosts, selectedCategoryIds } = usePostStore();
 
-  const setAllCategories = useCategoryStore(store => store.setAllCategories); // ✅ from store
+  const { setAllCategories } = useCategoryStore();
 
   const fetchInitialData = async () => {
     try {
@@ -26,16 +26,11 @@ const Posts = () => {
         categoriesApi.fetch(),
       ]);
 
-      const posts = postsResponse.data.posts;
-      const categories = categoriesResponse.data; // ✅ array
-
-      setPosts(posts);
-      setAllCategories(categories); // ✅ this should now work correctly
+      setPosts(postsResponse.data.posts);
+      setAllCategories(categoriesResponse.data);
       logger.info("Posts and categories fetched successfully");
     } catch (error) {
       logger.error(error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -43,11 +38,17 @@ const Posts = () => {
     fetchInitialData();
   }, []);
 
-  if (loading) return <PageLoader />;
+  const filteredPosts = !isEmpty(selectedCategoryIds)
+    ? posts.filter(post =>
+        post.categories?.some(category =>
+          selectedCategoryIds.includes(category.id)
+        )
+      )
+    : posts;
 
-  if (either(isNil, isEmpty)(posts)) {
-    return <NoDataPage />;
-  }
+  if (either(isNil, isEmpty)(posts)) return <PageLoader />;
+
+  if (isEmpty(filteredPosts)) return <NoDataPage />;
 
   return (
     <div className="relative flex h-screen overflow-hidden">
@@ -61,7 +62,7 @@ const Posts = () => {
       >
         <Header showAddButton title="Blog Posts" />
         <div className="space-y-6">
-          {posts.map((post, index) => (
+          {filteredPosts.map((post, index) => (
             <PostCard key={index} post={post} />
           ))}
         </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import {
   Typography,
@@ -9,33 +9,21 @@ import {
 } from "@bigbinary/neetoui";
 import { useHistory } from "react-router-dom";
 
-import categoriesApi from "../../apis/category"; // ✅ You need to implement this
 import postsApi from "../../apis/post";
 import Header from "../commons/Header";
+import useCategoryStore from "../stores/useCategoryStore";
 
 const NewPost = () => {
-  const [formData, setFormData] = useState({ title: "", description: "" });
-  const [categories, setCategories] = useState([]); // All categories from API
-  const [selectedCategories, setSelectedCategories] = useState([]); // IDs of selected categories
-
   const history = useHistory();
+  const [formData, setFormData] = useState({ title: "", description: "" });
+  const [selectedCategories, setSelectedCategories] = useState([]);
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  const { categories } = useCategoryStore();
 
-  const fetchCategories = async () => {
-    try {
-      const response = await categoriesApi.fetch(); // Make sure this returns all categories
-      const formattedOptions = response.data.map(category => ({
-        label: category.name,
-        value: category.id,
-      }));
-      setCategories(formattedOptions);
-    } catch (error) {
-      logger.error(error);
-    }
-  };
+  const formattedOptions = categories.map(category => ({
+    label: category.name,
+    value: category.id,
+  }));
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -44,9 +32,10 @@ const NewPost = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+
     const payload = {
       ...formData,
-      category_ids: selectedCategories.map(option => option.value), // Send category IDs
+      category_ids: selectedCategories.map(option => option.value),
     };
 
     try {
@@ -91,7 +80,7 @@ const NewPost = () => {
               <Select
                 isMulti
                 isSearchable
-                options={categories}
+                options={formattedOptions}
                 placeholder="Select categories"
                 value={selectedCategories}
                 onChange={setSelectedCategories}
