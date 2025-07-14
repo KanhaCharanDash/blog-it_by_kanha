@@ -4,6 +4,8 @@ import { Typography } from "@bigbinary/neetoui";
 import Logger from "js-logger";
 import { useParams } from "react-router-dom";
 
+import CategoryBadgeList from "./CategoryBadgeList"; // ✅ Import the badge list component
+
 import postsApi from "../../apis/post";
 import Header from "../commons/Header";
 import PageLoader from "../commons/PageLoader"; // ✅ Import loader
@@ -38,6 +40,7 @@ const Show = () => {
       <div className="flex h-20 w-20 items-center justify-center" />
       <Navbar />
       <div className="w-full flex-1 overflow-y-auto px-4 pt-20 md:ml-48 md:px-12 md:pt-10">
+        <CategoryBadgeList categories={post.categories} />
         <Header title={post.title || "Loading..."} />
         <div className="mt-4 max-w-4xl space-y-4">
           <Typography className="text-lg leading-7 text-gray-700">

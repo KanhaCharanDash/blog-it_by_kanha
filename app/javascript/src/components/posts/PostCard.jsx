@@ -3,6 +3,8 @@ import React from "react";
 import { Typography } from "@bigbinary/neetoui";
 import { Link } from "react-router-dom";
 
+import CategoryBadgeList from "./CategoryBadgeList";
+// ✅ Import the badge list component
 const truncate = (text, limit) => {
   if (!text) return "";
 
@@ -26,14 +28,7 @@ const PostCard = ({ post }) => (
     {/* Category badges */}
     {post.categories?.length > 0 && (
       <div className="mt-2 flex flex-wrap gap-2">
-        {post.categories.map(category => (
-          <span
-            className="rounded bg-green-100 px-2 py-1 text-green-700"
-            key={category.id}
-          >
-            {category.name}
-          </span>
-        ))}
+        <CategoryBadgeList categories={post.categories} />
       </div>
     )}
   </div>
