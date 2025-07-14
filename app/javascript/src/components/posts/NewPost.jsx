@@ -1,14 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { Typography, Input, Textarea, Button } from "@bigbinary/neetoui";
+import {
+  Typography,
+  Input,
+  Textarea,
+  Button,
+  Select,
+} from "@bigbinary/neetoui";
 import { useHistory } from "react-router-dom";
 
+import categoriesApi from "../../apis/category"; // ✅ You need to implement this
 import postsApi from "../../apis/post";
 import Header from "../commons/Header";
 
 const NewPost = () => {
   const [formData, setFormData] = useState({ title: "", description: "" });
+  const [categories, setCategories] = useState([]); // All categories from API
+  const [selectedCategories, setSelectedCategories] = useState([]); // IDs of selected categories
+
   const history = useHistory();
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await categoriesApi.fetch(); // Make sure this returns all categories
+      const formattedOptions = response.data.map(category => ({
+        label: category.name,
+        value: category.id,
+      }));
+      setCategories(formattedOptions);
+    } catch (error) {
+      logger.error(error);
+    }
+  };
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -17,18 +44,22 @@ const NewPost = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    const payload = {
+      ...formData,
+      category_ids: selectedCategories.map(option => option.value), // Send category IDs
+    };
 
     try {
-      await postsApi.create(formData);
-      history.push("/"); // ✅ Redirect to home after success
+      await postsApi.create(payload);
+      history.push("/");
     } catch (error) {
-      // You may want to show error to user with NeetoToast or similar
       logger.error(error);
     }
   };
 
   const handleCancel = () => {
     setFormData({ title: "", description: "" });
+    setSelectedCategories([]);
   };
 
   return (
@@ -53,6 +84,17 @@ const NewPost = () => {
                 placeholder="Enter description"
                 value={formData.description}
                 onChange={handleChange}
+              />
+            </div>
+            <div>
+              <Typography className="mb-1 font-medium">Categories</Typography>
+              <Select
+                isMulti
+                isSearchable
+                options={categories}
+                placeholder="Select categories"
+                value={selectedCategories}
+                onChange={setSelectedCategories}
               />
             </div>
             <div className="flex justify-end gap-2 pt-4">
