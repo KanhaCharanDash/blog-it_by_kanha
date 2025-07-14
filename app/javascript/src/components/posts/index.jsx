@@ -5,23 +5,33 @@ import { isNil, isEmpty, either } from "ramda";
 
 import PostCard from "./PostCard";
 
+import categoriesApi from "../../apis/category";
 import postsApi from "../../apis/post";
 import Header from "../commons/Header";
 import NoDataPage from "../commons/NoDataPage";
 import PageLoader from "../commons/PageLoader";
 import Navbar from "../Navbar";
+import useCategoryStore from "../stores/useCategoryStore";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchPosts = async () => {
+  const setAllCategories = useCategoryStore(store => store.setAllCategories); // ✅ from store
+
+  const fetchInitialData = async () => {
     try {
-      const {
-        data: { posts },
-      } = await postsApi.fetch();
+      const [postsResponse, categoriesResponse] = await Promise.all([
+        postsApi.fetch(),
+        categoriesApi.fetch(),
+      ]);
+
+      const posts = postsResponse.data.posts;
+      const categories = categoriesResponse.data; // ✅ array
+
       setPosts(posts);
-      logger.error(posts);
+      setAllCategories(categories); // ✅ this should now work correctly
+      logger.info("Posts and categories fetched successfully");
     } catch (error) {
       logger.error(error);
     } finally {
@@ -30,7 +40,7 @@ const Posts = () => {
   };
 
   useEffect(() => {
-    fetchPosts();
+    fetchInitialData();
   }, []);
 
   if (loading) return <PageLoader />;
