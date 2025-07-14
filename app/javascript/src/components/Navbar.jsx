@@ -1,23 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useEffect } from "react";
 
-import { Button, Typography } from "@bigbinary/neetoui";
-import classNames from "classnames";
-import {
-  RiMenuLine,
-  RiBookLine,
-  RiFileAddLine,
-  RiFolderLine,
-} from "react-icons/ri";
+import { Tooltip } from "@bigbinary/neetoui";
+import { RiBookLine, RiFileAddLine, RiFolderLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
 import CategorySidebar from "./Sidebar/CategorySidebar";
 
 const Navbar = ({ categories = [], onCategorySelect, onAddCategory }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [showCategories, setShowCategories] = useState(false);
   const sidebarRef = useRef(null);
   const categorySidebarRef = useRef(null);
-  const modalRef = useRef(null); // ✅ modal ref
+  const modalRef = useRef(null);
+  const [showCategories, setShowCategories] = React.useState(false);
 
   const handleOutsideClick = event => {
     const clickedOutsideSidebar =
@@ -35,7 +28,6 @@ const Navbar = ({ categories = [], onCategorySelect, onAddCategory }) => {
       clickedOutsideCategorySidebar &&
       clickedOutsideModal
     ) {
-      setIsOpen(false);
       setShowCategories(false);
     }
   };
@@ -48,61 +40,32 @@ const Navbar = ({ categories = [], onCategorySelect, onAddCategory }) => {
 
   return (
     <>
-      {/* Hamburger Button */}
-      <Button
-        className="fixed left-4 top-4 z-50 md:hidden"
-        icon={RiMenuLine}
-        style="text"
-        onClick={() => {
-          setIsOpen(prev => {
-            const newIsOpen = !prev;
-            if (!newIsOpen) setShowCategories(false); // 👈 Close sidebar too
-
-            return newIsOpen;
-          });
-        }}
-      />
-      {/* Primary Sidebar */}
+      {/* Slim Sidebar with Icons Only */}
       <div
+        className="fixed inset-y-0 left-0 z-40 flex w-14 flex-col items-center bg-white py-4 shadow"
         ref={sidebarRef}
-        className={classNames(
-          "fixed inset-y-0 left-0 z-40 w-48 transform bg-white shadow-md transition-transform duration-300 ease-in-out",
-          {
-            "-translate-x-full": !isOpen,
-            "translate-x-0": isOpen,
-            "md:translate-x-0": true,
-          }
-        )}
       >
-        <nav className="mt-12 flex flex-col space-y-4 p-4 md:mt-4">
-          <Link
-            className="flex items-center space-x-2 text-gray-800 hover:text-blue-600"
-            to="/"
-          >
-            <RiBookLine />
-            <Typography component="span" style="body2">
-              Blog Posts
-            </Typography>
+        <Tooltip content="Blog Posts" position="right">
+          <Link className="mb-6 text-gray-700 hover:text-blue-600" to="/">
+            <RiBookLine size={24} />
           </Link>
+        </Tooltip>
+        <Tooltip content="New Post" position="right">
           <Link
-            className="flex items-center space-x-2 text-gray-800 hover:text-blue-600"
+            className="mb-6 text-gray-700 hover:text-blue-600"
             to="/posts/new"
           >
-            <RiFileAddLine />
-            <Typography component="span" style="body2">
-              New Post
-            </Typography>
+            <RiFileAddLine size={24} />
           </Link>
+        </Tooltip>
+        <Tooltip content="Categories" position="right">
           <button
-            className="flex items-center space-x-2 text-gray-800 hover:text-blue-600"
+            className="mb-6 text-gray-700 hover:text-blue-600"
             onClick={() => setShowCategories(prev => !prev)}
           >
-            <RiFolderLine />
-            <Typography component="span" style="body2">
-              Categories
-            </Typography>
+            <RiFolderLine size={24} />
           </button>
-        </nav>
+        </Tooltip>
       </div>
       {/* Category Sidebar */}
       {showCategories && (

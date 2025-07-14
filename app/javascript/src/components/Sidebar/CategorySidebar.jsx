@@ -4,14 +4,14 @@ import { Input, Typography, Button, Modal, Toastr } from "@bigbinary/neetoui";
 
 import categoriesApi from "../../apis/category";
 import useCategoryStore from "../stores/useCategoryStore";
+import usePostStore from "../stores/usePostStore";
 
 const CategorySidebar = forwardRef(({ modalRef }, ref) => {
   const { categories, setCategory } = useCategoryStore();
+  const { selectedCategoryIds, toggleCategoryId } = usePostStore();
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
-
-  const allCategories = Object.values(categories); // ✅ convert object to array
 
   const handleAddCategory = async () => {
     if (!newCategoryName.trim()) return;
@@ -21,7 +21,7 @@ const CategorySidebar = forwardRef(({ modalRef }, ref) => {
         data: { category },
       } = await categoriesApi.create({ name: newCategoryName });
 
-      setCategory(category.id, category);
+      setCategory(category);
       Toastr.success("Category added successfully");
       setNewCategoryName("");
       setIsAddModalOpen(false);
@@ -33,7 +33,7 @@ const CategorySidebar = forwardRef(({ modalRef }, ref) => {
   return (
     <>
       <div
-        className="fixed left-48 top-0 z-30 h-full w-64 bg-white p-4 shadow-md"
+        className="fixed left-14 top-0 z-30 h-full w-64 bg-white p-4 shadow-md"
         ref={ref}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -45,15 +45,22 @@ const CategorySidebar = forwardRef(({ modalRef }, ref) => {
           />
         </div>
         <div className="space-y-2 overflow-y-auto">
-          {allCategories.map(category => (
-            <Button
-              className="w-full justify-start"
-              key={category.id}
-              label={category.name}
-              size="small"
-              style="secondary"
-            />
-          ))}
+          {categories.map(category => {
+            const isSelected = selectedCategoryIds.includes(category.id);
+
+            return (
+              <Button
+                key={category.id}
+                label={category.name}
+                size="small"
+                style="secondary"
+                className={`w-full justify-start ${
+                  isSelected ? "bg-blue-600 text-white" : "bg-gray-100"
+                }`}
+                onClick={() => toggleCategoryId(category.id)}
+              />
+            );
+          })}
         </div>
       </div>
       <Modal

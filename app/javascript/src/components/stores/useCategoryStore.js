@@ -1,32 +1,33 @@
 // stores/useCategoryStore.js
-import { assoc, dissoc, isEmpty } from "ramda";
+import { update, findIndex, propEq } from "ramda";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 const useCategoryStore = create(
   persist(
     set => ({
-      categories: {},
-      setCategory: (id, category) =>
+      categories: [],
+      setCategory: category =>
         set(({ categories }) => {
-          if (isEmpty(category)) {
-            return { categories: dissoc(id, categories) };
+          const index = findIndex(propEq("id", category.id), categories);
+
+          if (index === -1) {
+            return { categories: [...categories, category] };
           }
 
-          return { categories: assoc(id, category, categories) };
+          return {
+            categories: update(index, category, categories),
+          };
         }),
+
       setAllCategories: newCategories => {
-        const categoriesObject = newCategories.reduce(
-          (acc, category) => assoc(category.id, category, acc),
-          {}
-        );
-        set({ categories: categoriesObject });
+        set({ categories: newCategories });
       },
       removeCategory: id =>
         set(({ categories }) => ({
-          categories: dissoc(id, categories),
+          categories: categories.filter(cat => cat.id !== id),
         })),
-      clearCategories: () => set({ categories: {} }),
+      clearCategories: () => set({ categories: [] }),
     }),
     {
       name: "category-store",
