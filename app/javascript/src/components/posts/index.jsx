@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 
-import { Typography } from "@bigbinary/neetoui";
 import classnames from "classnames";
 import { isNil, isEmpty, either } from "ramda";
 
 import PostCard from "./PostCard";
 
 import postsApi from "../../apis/post";
-import Container from "../commons/Container";
 import Header from "../commons/Header";
+import NoDataPage from "../commons/NoDataPage";
 import PageLoader from "../commons/PageLoader";
 import Navbar from "../Navbar";
 
@@ -37,13 +36,7 @@ const Posts = () => {
   if (loading) return <PageLoader />;
 
   if (either(isNil, isEmpty)(posts)) {
-    return (
-      <Container className="flex h-screen items-center justify-center">
-        <Typography className="text-center text-gray-600" style="h4">
-          You have not created or been assigned any tasks 🥳
-        </Typography>
-      </Container>
-    );
+    return <NoDataPage />;
   }
 
   return (
