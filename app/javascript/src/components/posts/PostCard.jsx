@@ -23,6 +23,19 @@ const PostCard = ({ post }) => (
     <Typography className="text-gray-700" component="p" style="body2">
       {truncate(post.description, 25)}
     </Typography>
+    {/* Category badges */}
+    {post.categories?.length > 0 && (
+      <div className="mt-2 flex flex-wrap gap-2">
+        {post.categories.map(category => (
+          <span
+            className="rounded bg-green-100 px-2 py-1 text-green-700"
+            key={category.id}
+          >
+            {category.name}
+          </span>
+        ))}
+      </div>
+    )}
   </div>
 );
 
