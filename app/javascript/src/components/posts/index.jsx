@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import classnames from "classnames";
-import { either, isEmpty, isNil } from "ramda";
+import { isEmpty } from "ramda";
 
 import PostCard from "./PostCard";
 
@@ -15,12 +15,14 @@ import useCategoryStore from "../stores/useCategoryStore";
 import usePostStore from "../stores/usePostStore";
 
 const Posts = () => {
+  const [loading, setLoading] = useState(false);
   const { posts, setPosts, selectedCategoryIds } = usePostStore();
 
   const { setAllCategories } = useCategoryStore();
 
   const fetchInitialData = async () => {
     try {
+      setLoading(true);
       const [postsResponse, categoriesResponse] = await Promise.all([
         postsApi.fetch(),
         categoriesApi.fetch(),
@@ -31,6 +33,8 @@ const Posts = () => {
       logger.info("Posts and categories fetched successfully");
     } catch (error) {
       logger.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,7 +50,7 @@ const Posts = () => {
       )
     : posts;
 
-  if (either(isNil, isEmpty)(posts)) return <PageLoader />;
+  if (loading) return <PageLoader />;
 
   if (isEmpty(filteredPosts)) return <NoDataPage />;
 

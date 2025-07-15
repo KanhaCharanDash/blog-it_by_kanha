@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   resources :categories, only: [:index, :create]
   resources :organizations, only: [:index]
   resources :users, only: [:create]
+  resource :session, only: :create
+
   root "home#index"
   get "*path", to: "home#index", constraints: ->(req) { req.format.html? }
 end
