@@ -17,7 +17,6 @@ import usePostStore from "../stores/usePostStore";
 const Posts = () => {
   const [loading, setLoading] = useState(false);
   const { posts, setPosts, selectedCategoryIds } = usePostStore();
-
   const { setAllCategories } = useCategoryStore();
 
   const fetchInitialData = async () => {
@@ -27,10 +26,8 @@ const Posts = () => {
         postsApi.fetch(),
         categoriesApi.fetch(),
       ]);
-
       setPosts(postsResponse.data.posts);
       setAllCategories(categoriesResponse.data);
-      logger.info("Posts and categories fetched successfully");
     } catch (error) {
       logger.error(error);
     } finally {
@@ -55,20 +52,26 @@ const Posts = () => {
   if (isEmpty(filteredPosts)) return <NoDataPage />;
 
   return (
-    <div className="relative flex h-screen overflow-hidden">
-      <div className="flex h-20 w-20 items-center justify-center" />
-      <Navbar />
-      <div
-        className={classnames(
-          "w-full flex-1 overflow-y-auto p-4 transition-all duration-300 ease-in-out",
-          "pt-16 md:ml-48 md:pt-8"
-        )}
-      >
+    <div className="flex h-screen flex-col">
+      {/* Header at top */}
+      <div className="w-full bg-white shadow">
         <Header showAddButton title="Blog Posts" />
-        <div className="space-y-6">
-          {filteredPosts.map((post, index) => (
-            <PostCard key={index} post={post} />
-          ))}
+      </div>
+      {/* Body layout: navbar + content */}
+      <div className="flex flex-1 overflow-hidden">
+        <Navbar />
+        {/* Main content container (scrollable) */}
+        <div
+          className={classnames(
+            "flex-1 overflow-y-auto px-4 pb-6 pt-4 md:px-6",
+            "transition-all duration-300 ease-in-out"
+          )}
+        >
+          <div className="space-y-6">
+            {filteredPosts.map((post, index) => (
+              <PostCard key={index} post={post} />
+            ))}
+          </div>
         </div>
       </div>
     </div>

@@ -33,7 +33,7 @@ const CategorySidebar = forwardRef(({ modalRef }, ref) => {
   return (
     <>
       <div
-        className="fixed left-14 top-0 z-30 h-full w-64 bg-white p-4 shadow-md"
+        className="z-10 h-full w-64 flex-shrink-0 bg-white p-4 shadow-md"
         ref={ref}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -44,7 +44,7 @@ const CategorySidebar = forwardRef(({ modalRef }, ref) => {
             onClick={() => setIsAddModalOpen(true)}
           />
         </div>
-        <div className="space-y-2 overflow-y-auto">
+        <div className="space-y-2 overflow-y-auto pr-1">
           {categories.map(category => {
             const isSelected = selectedCategoryIds.includes(category.id);
 
