@@ -18,15 +18,13 @@ class PostsController < ApplicationController
  end
 
   def create
-    # Sample fallback user (for development/demo only)
-    user = User.first
+    user = User.find(params[:user_id])
     organization = user.organization
 
     post = Post.new(post_params)
     post.user = user
     post.organization = organization
 
-    # Assign categories using category_ids
     if params[:category_ids].present?
       post.categories = Category.where(id: params[:category_ids])
     end
@@ -36,7 +34,7 @@ class PostsController < ApplicationController
     else
       render json: { errors: post.errors.full_messages }, status: :unprocessable_entity
     end
-  end
+ end
 
   def show
     post = Post.includes(:categories, :user, :organization).find_by!(slug: params[:slug])
