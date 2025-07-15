@@ -1,6 +1,7 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { Tooltip, Button, Avatar } from "@bigbinary/neetoui";
+import Logger from "js-logger";
 import {
   RiBookLine,
   RiFileAddLine,
@@ -10,7 +11,11 @@ import {
 import { Link } from "react-router-dom";
 
 import CategorySidebar from "./Sidebar/CategorySidebar";
+import useAuthStore from "./stores/useAuthStore";
 import useCategoryStore from "./stores/useCategoryStore";
+
+import authApi from "../apis/auth";
+import { resetAuthTokens } from "../apis/axios";
 
 const Navbar = () => {
   const sidebarRef = useRef(null);
@@ -21,37 +26,19 @@ const Navbar = () => {
   const [showLogout, setShowLogout] = useState(false);
 
   const { categories } = useCategoryStore();
+  const { resetAuth } = useAuthStore.getState();
 
-  const handleOutsideClick = event => {
-    const clickedOutsideSidebar =
-      sidebarRef.current && !sidebarRef.current.contains(event.target);
+  const handleLogout = async () => {
+    try {
+      await authApi.logout();
 
-    const clickedOutsideCategorySidebar =
-      categorySidebarRef.current &&
-      !categorySidebarRef.current.contains(event.target);
-
-    const clickedOutsideModal =
-      modalRef.current && !modalRef.current.contains(event.target);
-
-    if (
-      clickedOutsideSidebar &&
-      clickedOutsideCategorySidebar &&
-      clickedOutsideModal
-    ) {
-      setShowCategories(false);
-      setShowLogout(false);
+      // Correct Zustand usage
+      resetAuth();
+      resetAuthTokens();
+      window.location.href = "/";
+    } catch (error) {
+      Logger.error("Logout failed:", error);
     }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
-
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.clear();
-    window.location.href = "/login";
   };
 
   return (

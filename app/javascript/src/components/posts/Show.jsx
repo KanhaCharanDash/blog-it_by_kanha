@@ -42,23 +42,24 @@ const Show = () => {
   if (loading) return <PageLoader />;
 
   return (
-    <div className="relative flex min-h-screen overflow-hidden">
-      <div className="flex h-20 w-20 items-center justify-center" />
+    <div className="flex min-h-screen">
+      {/* Sidebar */}
       <Navbar />
-      <div className="w-full flex-1 overflow-y-auto px-4 pt-20 md:ml-48 md:px-12 md:pt-10">
+      {/* Main Content */}
+      <div className="flex-1 overflow-y-auto px-4 pt-2 md:px-12 md:pt-10">
         {/* Category badges */}
+        <Header title={post.title || "Loading..."} />
         <div className="mb-4">
           <CategoryBadgeList categories={post.categories} />
         </div>
         {/* Post title */}
-        <Header title={post.title || "Loading..."} />
         {/* Author section */}
         <div className="mb-6 mt-4 flex items-center space-x-4">
           <Avatar
             size="medium"
             user={{
               name: post.author_name || "Unknown Author",
-              imageUrl: undefined, // or a static fallback
+              imageUrl: undefined,
             }}
           />
           <div className="flex flex-col">

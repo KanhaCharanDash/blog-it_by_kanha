@@ -12,14 +12,18 @@ const Header = ({ title, showAddButton = false }) => {
   };
 
   return (
-    <div className="flex items-center justify-between border-b px-6 py-4 shadow-sm">
-      <Typography className="text-2xl font-bold">{title}</Typography>
+    <div className="flex items-center justify-between border-b bg-white px-6 py-3 shadow-sm">
+      <div className="flex items-center">
+        <Typography className="text-xl font-semibold">{title}</Typography>
+      </div>
       {showAddButton && (
-        <Button
-          icon="ri-add-line"
-          label="Add new post"
-          onClick={handleAddClick}
-        />
+        <div className="flex items-center">
+          <Button
+            icon="ri-add-line"
+            label="Add new post"
+            onClick={handleAddClick}
+          />
+        </div>
       )}
     </div>
   );

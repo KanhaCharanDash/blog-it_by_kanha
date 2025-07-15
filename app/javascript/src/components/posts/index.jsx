@@ -52,15 +52,16 @@ const Posts = () => {
   if (isEmpty(filteredPosts)) return <NoDataPage />;
 
   return (
-    <div className="flex h-screen flex-col">
-      {/* Header at top */}
-      <div className="w-full bg-white shadow">
-        <Header showAddButton title="Blog Posts" />
-      </div>
-      {/* Body layout: navbar + content */}
-      <div className="flex flex-1 overflow-hidden">
-        <Navbar />
-        {/* Main content container (scrollable) */}
+    <div className="flex h-screen overflow-hidden">
+      {/* Left Sidebar (Navbar) */}
+      <Navbar />
+      {/* Right Side: Header + Content */}
+      <div className="flex flex-1 flex-col">
+        {/* Header (Fixed Height) */}
+        <div className="">
+          <Header showAddButton title="Blog Posts" />
+        </div>
+        {/* Scrollable Content */}
         <div
           className={classnames(
             "flex-1 overflow-y-auto px-4 pb-6 pt-4 md:px-6",
