@@ -11,6 +11,7 @@ import { useHistory } from "react-router-dom";
 
 import postsApi from "../../apis/post";
 import Header from "../commons/Header";
+import useAuthStore from "../stores/useAuthStore";
 import useCategoryStore from "../stores/useCategoryStore";
 
 const NewPost = () => {
@@ -33,8 +34,12 @@ const NewPost = () => {
   const handleSubmit = async e => {
     e.preventDefault();
 
+    const { userId, organizationId } = useAuthStore.getState();
+
     const payload = {
       ...formData,
+      user_id: userId,
+      organization_id: organizationId,
       category_ids: selectedCategories.map(option => option.value),
     };
 

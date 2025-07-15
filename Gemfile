@@ -80,3 +80,5 @@ group :development do
 end
 
 gem "data_migrate"
+
+gem "bcrypt", "~> 3.1.7"

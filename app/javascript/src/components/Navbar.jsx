@@ -1,83 +1,107 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState } from "react";
 
-import { Tooltip } from "@bigbinary/neetoui";
-import { RiBookLine, RiFileAddLine, RiFolderLine } from "react-icons/ri";
+import { Tooltip, Button, Avatar } from "@bigbinary/neetoui";
+import Logger from "js-logger";
+import {
+  RiBookLine,
+  RiFileAddLine,
+  RiFolderLine,
+  RiLogoutBoxRLine,
+} from "react-icons/ri";
 import { Link } from "react-router-dom";
 
 import CategorySidebar from "./Sidebar/CategorySidebar";
+import useAuthStore from "./stores/useAuthStore";
+import useCategoryStore from "./stores/useCategoryStore";
 
-const Navbar = ({ categories = [], onCategorySelect, onAddCategory }) => {
+import authApi from "../apis/auth";
+import { resetAuthTokens } from "../apis/axios";
+
+const Navbar = () => {
   const sidebarRef = useRef(null);
   const categorySidebarRef = useRef(null);
   const modalRef = useRef(null);
-  const [showCategories, setShowCategories] = React.useState(false);
 
-  const handleOutsideClick = event => {
-    const clickedOutsideSidebar =
-      sidebarRef.current && !sidebarRef.current.contains(event.target);
+  const [showCategories, setShowCategories] = useState(false);
+  const [showLogout, setShowLogout] = useState(false);
 
-    const clickedOutsideCategorySidebar =
-      categorySidebarRef.current &&
-      !categorySidebarRef.current.contains(event.target);
+  const { categories } = useCategoryStore();
+  const { resetAuth } = useAuthStore.getState();
 
-    const clickedOutsideModal =
-      modalRef.current && !modalRef.current.contains(event.target);
+  const handleLogout = async () => {
+    try {
+      await authApi.logout();
 
-    if (
-      clickedOutsideSidebar &&
-      clickedOutsideCategorySidebar &&
-      clickedOutsideModal
-    ) {
-      setShowCategories(false);
+      // Correct Zustand usage
+      resetAuth();
+      resetAuthTokens();
+      window.location.href = "/";
+    } catch (error) {
+      Logger.error("Logout failed:", error);
     }
   };
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
-
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, []);
-
   return (
-    <>
-      {/* Slim Sidebar with Icons Only */}
+    <div className="flex h-screen">
+      {/* Sidebar container */}
       <div
-        className="fixed inset-y-0 left-0 z-40 flex w-14 flex-col items-center bg-white py-4 shadow"
+        className="flex h-full w-14 flex-col items-center justify-between bg-white py-4 shadow"
         ref={sidebarRef}
       >
-        <Tooltip content="Blog Posts" position="right">
-          <Link className="mb-6 text-gray-700 hover:text-blue-600" to="/">
-            <RiBookLine size={24} />
-          </Link>
-        </Tooltip>
-        <Tooltip content="New Post" position="right">
-          <Link
-            className="mb-6 text-gray-700 hover:text-blue-600"
-            to="/posts/new"
-          >
-            <RiFileAddLine size={24} />
-          </Link>
-        </Tooltip>
-        <Tooltip content="Categories" position="right">
-          <button
-            className="mb-6 text-gray-700 hover:text-blue-600"
-            onClick={() => setShowCategories(prev => !prev)}
-          >
-            <RiFolderLine size={24} />
-          </button>
-        </Tooltip>
+        {/* Top icons */}
+        <div className="flex flex-col items-center space-y-6">
+          <Tooltip content="Blog Posts" position="right">
+            <Link className="text-gray-700 hover:text-blue-600" to="/">
+              <RiBookLine size={24} />
+            </Link>
+          </Tooltip>
+          <Tooltip content="New Post" position="right">
+            <Link className="text-gray-700 hover:text-blue-600" to="/posts/new">
+              <RiFileAddLine size={24} />
+            </Link>
+          </Tooltip>
+          <Tooltip content="Categories" position="right">
+            <button
+              className="text-gray-700 hover:text-blue-600"
+              onClick={() => setShowCategories(prev => !prev)}
+            >
+              <RiFolderLine size={24} />
+            </button>
+          </Tooltip>
+        </div>
+        {/* Bottom Profile */}
+        <div className="flex flex-col items-center space-y-6">
+          {showLogout && (
+            <Button
+              className="mb-2"
+              icon={RiLogoutBoxRLine}
+              label="Logout"
+              size="small"
+              style="secondary"
+              onClick={handleLogout}
+            />
+          )}
+          <Avatar
+            className="cursor-pointer"
+            size="small"
+            user={{
+              name: "John Doe",
+              imageUrl:
+                "https://ui-avatars.com/api/?name=John+Doe&background=random",
+            }}
+            onClick={() => setShowLogout(prev => !prev)}
+          />
+        </div>
       </div>
-      {/* Category Sidebar */}
+      {/* Category sidebar if toggled */}
       {showCategories && (
         <CategorySidebar
           categories={categories}
           modalRef={modalRef}
           ref={categorySidebarRef}
-          onAddCategory={onAddCategory}
-          onCategorySelect={onCategorySelect}
         />
       )}
-    </>
+    </div>
   );
 };
 

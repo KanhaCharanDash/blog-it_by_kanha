@@ -4,6 +4,9 @@ Rails.application.routes.draw do
   get "posts/index"
   resources :posts, only: %i[index create show], param: :slug
   resources :categories, only: [:index, :create]
+  resources :organizations, only: [:index]
+  resources :users, only: [:create]
+  resource :session, only: [:create, :destroy]
 
   root "home#index"
   get "*path", to: "home#index", constraints: ->(req) { req.format.html? }

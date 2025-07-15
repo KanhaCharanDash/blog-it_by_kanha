@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import classnames from "classnames";
-import { either, isEmpty, isNil } from "ramda";
+import { isEmpty } from "ramda";
 
 import PostCard from "./PostCard";
 
@@ -15,22 +15,23 @@ import useCategoryStore from "../stores/useCategoryStore";
 import usePostStore from "../stores/usePostStore";
 
 const Posts = () => {
+  const [loading, setLoading] = useState(false);
   const { posts, setPosts, selectedCategoryIds } = usePostStore();
-
   const { setAllCategories } = useCategoryStore();
 
   const fetchInitialData = async () => {
     try {
+      setLoading(true);
       const [postsResponse, categoriesResponse] = await Promise.all([
         postsApi.fetch(),
         categoriesApi.fetch(),
       ]);
-
       setPosts(postsResponse.data.posts);
       setAllCategories(categoriesResponse.data);
-      logger.info("Posts and categories fetched successfully");
     } catch (error) {
       logger.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,25 +47,32 @@ const Posts = () => {
       )
     : posts;
 
-  if (either(isNil, isEmpty)(posts)) return <PageLoader />;
+  if (loading) return <PageLoader />;
 
   if (isEmpty(filteredPosts)) return <NoDataPage />;
 
   return (
-    <div className="relative flex h-screen overflow-hidden">
-      <div className="flex h-20 w-20 items-center justify-center" />
+    <div className="flex h-screen overflow-hidden">
+      {/* Left Sidebar (Navbar) */}
       <Navbar />
-      <div
-        className={classnames(
-          "w-full flex-1 overflow-y-auto p-4 transition-all duration-300 ease-in-out",
-          "pt-16 md:ml-48 md:pt-8"
-        )}
-      >
-        <Header showAddButton title="Blog Posts" />
-        <div className="space-y-6">
-          {filteredPosts.map((post, index) => (
-            <PostCard key={index} post={post} />
-          ))}
+      {/* Right Side: Header + Content */}
+      <div className="flex flex-1 flex-col">
+        {/* Header (Fixed Height) */}
+        <div className="">
+          <Header showAddButton title="Blog Posts" />
+        </div>
+        {/* Scrollable Content */}
+        <div
+          className={classnames(
+            "flex-1 overflow-y-auto px-4 pb-6 pt-4 md:px-6",
+            "transition-all duration-300 ease-in-out"
+          )}
+        >
+          <div className="space-y-6">
+            {filteredPosts.map((post, index) => (
+              <PostCard key={index} post={post} />
+            ))}
+          </div>
         </div>
       </div>
     </div>

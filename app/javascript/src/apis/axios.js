@@ -1,25 +1,26 @@
 import axios from "axios";
-import { setToLocalStorage, getFromLocalStorage } from "utils/storage";
 
 import Toastr from "../components/commons/Toastr";
+import useAuthStore from "../components/stores/useAuthStore";
 
 const DEFAULT_ERROR_NOTIFICATION = "Something went wrong!";
 
 axios.defaults.baseURL = "/";
 
 const setAuthHeaders = () => {
+  const { authToken, email } = useAuthStore.getState(); // ⬅️ Zustand instead of localStorage
+
   axios.defaults.headers = {
     Accept: "application/json",
     "Content-Type": "application/json",
     "X-CSRF-TOKEN": document
       .querySelector('[name="csrf-token"]')
-      .getAttribute("content"),
+      ?.getAttribute("content"),
   };
-  const token = getFromLocalStorage("authToken");
-  const email = getFromLocalStorage("authEmail");
-  if (token && email) {
+
+  if (authToken && email) {
     axios.defaults.headers["X-Auth-Email"] = email;
-    axios.defaults.headers["X-Auth-Token"] = token;
+    axios.defaults.headers["X-Auth-Token"] = authToken;
   }
 };
 
@@ -36,7 +37,7 @@ const handleSuccessResponse = response => {
 
 const handleErrorResponse = axiosErrorObject => {
   if (axiosErrorObject.response?.status === 401) {
-    setToLocalStorage({ authToken: null, email: null, userId: null });
+    useAuthStore.resetAuth(); // Reset Zustand store
     setTimeout(() => (window.location.href = "/"), 2000);
   }
 
@@ -56,4 +57,9 @@ const registerIntercepts = () => {
   );
 };
 
-export { setAuthHeaders, registerIntercepts };
+const resetAuthTokens = () => {
+  delete axios.defaults.headers["X-Auth-Email"];
+  delete axios.defaults.headers["X-Auth-Token"];
+};
+
+export { setAuthHeaders, registerIntercepts, resetAuthTokens };
