@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-import { Typography, Tooltip, Table, Dropdown } from "@bigbinary/neetoui";
+import {
+  Typography,
+  Tooltip,
+  Table,
+  Dropdown,
+  Toastr,
+} from "@bigbinary/neetoui";
 import { useHistory } from "react-router-dom";
 
 import PageLoader from "./commons/PageLoader";
@@ -33,24 +39,33 @@ const BlogPosts = () => {
   const handleStatusChange = async (slug, newStatus) => {
     try {
       await postsApi.update({ slug, payload: { status: newStatus } });
-
       const updatedPostRes = await postsApi.show(slug);
       const updatedPost = updatedPostRes.data.post;
-
       setPosts(prev =>
         prev.map(post => (post.slug === slug ? updatedPost : post))
       );
+
+      Toastr.success(
+        `Post ${
+          newStatus === "published" ? "published" : "unpublished"
+        } successfully.`
+      );
     } catch (error) {
       logger.error(error);
+      Toastr.error("Failed to update post status.");
     }
   };
 
   const handleDelete = async slug => {
+    if (!window.confirm("Are you sure you want to delete this post?")) return;
+
     try {
       await postsApi.destroy(slug);
       setPosts(prev => prev.filter(p => p.slug !== slug));
+      Toastr.success("Post deleted successfully.");
     } catch (error) {
       logger.error(error);
+      Toastr.error("Something went wrong while deleting the post.");
     }
   };
 

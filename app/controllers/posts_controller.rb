@@ -88,6 +88,12 @@ class PostsController < ApplicationController
     }
   end
 
+  def destroy
+    @post = Post.find_by!(slug: params[:slug])
+    @post.destroy!
+    head :no_content
+end
+
   private
 
     def post_params
