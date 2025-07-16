@@ -18,9 +18,11 @@ const Edit = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
+    status: "drafted", // <-- added
     user_id: null,
     organization_id: null,
   });
+
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -38,6 +40,7 @@ const Edit = () => {
       setFormData({
         title: post.title,
         description: post.description,
+        status: post.status || "drafted",
         user_id: post.user_id,
         organization_id: post.organization_id,
       });
@@ -61,16 +64,15 @@ const Edit = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
-
+  const handleSubmit = async (status = "drafted") => {
     const payload = {
       ...formData,
+      status,
       category_ids: selectedCategories.map(cat => cat.value),
     };
 
     try {
-      await postsApi.update({ slug, payload }); // ✅ FIXED LINE
+      await postsApi.update({ slug, payload });
       history.push(`/posts/${slug}`);
     } catch (error) {
       Logger.error("Error updating post:", error);
@@ -97,7 +99,8 @@ const Edit = () => {
       onCancel={handleCancel}
       onCategoryChange={setSelectedCategories}
       onChange={handleChange}
-      onSubmit={handleSubmit}
+      onSaveDraft={() => handleSubmit("drafted")}
+      onSubmit={() => handleSubmit("published")}
     />
   );
 };

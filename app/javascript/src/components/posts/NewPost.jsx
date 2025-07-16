@@ -28,10 +28,10 @@ const NewPost = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handlePostSubmit = async status => {
     const payload = {
       ...formData,
+      status, // "published" or "drafted"
       user_id: userId,
       organization_id: organizationId,
       category_ids: selectedCategories.map(option => option.value),
@@ -45,9 +45,20 @@ const NewPost = () => {
     }
   };
 
+  const handleSubmit = e => {
+    e.preventDefault();
+    handlePostSubmit("published");
+  };
+
+  const handleSaveDraft = e => {
+    e.preventDefault();
+    handlePostSubmit("drafted");
+  };
+
   const handleCancel = () => {
     setFormData({ title: "", description: "" });
     setSelectedCategories([]);
+    history.push("/");
   };
 
   return (
@@ -59,6 +70,7 @@ const NewPost = () => {
       onCancel={handleCancel}
       onCategoryChange={setSelectedCategories}
       onChange={handleChange}
+      onSaveDraft={handleSaveDraft}
       onSubmit={handleSubmit}
     />
   );
