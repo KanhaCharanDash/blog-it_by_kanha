@@ -9,6 +9,7 @@ import Login from "./components/Authentication/Login";
 import Signup from "./components/Authentication/Signup";
 import PrivateRoute from "./components/commons/PrivateRoute";
 import Posts from "./components/posts";
+import Edit from "./components/posts/Edit";
 import NewPost from "./components/posts/NewPost";
 import Show from "./components/posts/Show";
 import useAuthStore from "./components/stores/useAuthStore";
@@ -42,6 +43,13 @@ const App = () => {
           component={Show}
           condition={isLoggedIn}
           path="/posts/:slug"
+          redirectRoute="/login"
+        />
+        <PrivateRoute
+          exact
+          component={Edit}
+          condition={isLoggedIn}
+          path="/posts/:slug/edit"
           redirectRoute="/login"
         />
       </Switch>

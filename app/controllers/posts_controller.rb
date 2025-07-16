@@ -54,6 +54,20 @@ class PostsController < ApplicationController
     }
   end
 
+  def update
+    post = Post.find_by!(slug: params[:slug])
+
+    if post.user_id != current_user.id
+      return render_error("You are not authorized to edit this post.", :unauthorized)
+    end
+
+    if post.update(post_params)
+      render json: { post: post }, status: :ok
+    else
+      render json: { errors: post.errors.full_messages }, status: :unprocessable_entity
+    end
+end
+
   private
 
     def post_params
