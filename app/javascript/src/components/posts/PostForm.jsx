@@ -1,4 +1,3 @@
-// components/Posts/Form.jsx
 import React from "react";
 
 import {
@@ -7,9 +6,8 @@ import {
   Textarea,
   Button,
   Select,
+  Dropdown,
 } from "@bigbinary/neetoui";
-
-import Header from "../commons/Header";
 
 const PostForm = ({
   title,
@@ -19,14 +17,32 @@ const PostForm = ({
   onChange,
   onCategoryChange,
   onSubmit,
+  onSaveDraft,
   onCancel,
   isEdit = false,
 }) => (
   <div className="flex min-h-screen w-full flex-col">
-    <Header title={isEdit ? "Edit post" : "New blog post"} />
+    {/* Header */}
+    <div className="flex items-center justify-between border-b bg-white px-6 py-3 shadow-sm">
+      <Typography className="text-xl font-semibold">
+        {isEdit ? "Edit blog post" : "New blog post"}
+      </Typography>
+      <div className="flex items-center gap-2">
+        <Button label="Cancel" style="secondary" onClick={onCancel} />
+        <Dropdown
+          buttonProps={{ size: "small" }}
+          buttonStyle="primary"
+          label="Publish"
+        >
+          <li onClick={onSubmit}>Publish now</li>
+          <li onClick={onSaveDraft}>Save as draft</li>
+        </Dropdown>
+      </div>
+    </div>
+    {/* Form */}
     <div className="flex flex-1 items-start justify-center p-4 md:pt-6">
       <div className="w-full max-w-4xl rounded-2xl bg-white p-6 shadow-sm">
-        <form className="space-y-6" onSubmit={onSubmit}>
+        <form className="space-y-6">
           <div>
             <Typography className="mb-1 font-medium">Title*</Typography>
             <Input
@@ -37,7 +53,7 @@ const PostForm = ({
             />
           </div>
           <div>
-            <Typography className="mb-1 font-medium">Categories</Typography>
+            <Typography className="mb-1 font-medium">Category*</Typography>
             <Select
               isMulti
               isSearchable
@@ -50,20 +66,12 @@ const PostForm = ({
           <div>
             <Typography className="mb-1 font-medium">Description*</Typography>
             <Textarea
+              maxLength="1000"
               name="description"
               placeholder="Enter description"
               value={description}
               onChange={onChange}
             />
-          </div>
-          <div className="flex justify-end gap-2 pt-4">
-            <Button
-              label="Cancel"
-              style="secondary"
-              type="button"
-              onClick={onCancel}
-            />
-            <Button label="Submit" type="submit" />
           </div>
         </form>
       </div>
