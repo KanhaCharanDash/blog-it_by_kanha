@@ -9,7 +9,7 @@ import CategoryBadgeList from "./CategoryBadgeList";
 import postsApi from "../../apis/post";
 import Header from "../commons/Header";
 import PageLoader from "../commons/PageLoader";
-import Navbar from "../Navbar";
+import Navbar from "../Sidebar"; // 👈 Import Navbar
 
 const formatDate = dateString => {
   const options = { day: "numeric", month: "long", year: "numeric" };

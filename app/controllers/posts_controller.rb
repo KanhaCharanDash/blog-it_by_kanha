@@ -4,6 +4,15 @@ class PostsController < ApplicationController
   def index
     posts = Post.includes(:categories, :user, :organization)
       .where(organization_id: current_user.organization_id)
+      .where(user_id: current_user.id)
+
+    if params[:type].present?
+      types = params[:type].split(",").map(&:strip).map(&:downcase)
+
+      posts = posts.joins(:categories)
+        .where("LOWER(categories.name) IN (?)", types)
+        .distinct
+    end
 
     render json: {
       posts: posts.map do |post|
@@ -92,7 +101,7 @@ class PostsController < ApplicationController
     @post = Post.find_by!(slug: params[:slug])
     @post.destroy!
     head :no_content
-end
+  end
 
   private
 

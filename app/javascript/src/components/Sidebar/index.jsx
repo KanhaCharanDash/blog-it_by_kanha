@@ -11,12 +11,12 @@ import {
 } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
-import CategorySidebar from "./Sidebar/CategorySidebar";
-import useAuthStore from "./stores/useAuthStore";
-import useCategoryStore from "./stores/useCategoryStore";
+import CategorySidebar from "./CategorySidebar";
 
-import authApi from "../apis/auth";
-import { resetAuthTokens } from "../apis/axios";
+import authApi from "../../apis/auth";
+import { resetAuthTokens } from "../../apis/axios";
+import useAuthStore from "../stores/useAuthStore";
+import useCategoryStore from "../stores/useCategoryStore";
 
 const Navbar = () => {
   const sidebarRef = useRef(null);

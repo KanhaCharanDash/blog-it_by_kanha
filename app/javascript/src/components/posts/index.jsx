@@ -10,15 +10,15 @@ import postsApi from "../../apis/post";
 import Header from "../commons/Header";
 import NoDataPage from "../commons/NoDataPage";
 import PageLoader from "../commons/PageLoader";
-import Navbar from "../Navbar";
+import Navbar from "../Sidebar";
 import useCategoryStore from "../stores/useCategoryStore";
 import usePostStore from "../stores/usePostStore";
 
 const Posts = () => {
   const [loading, setLoading] = useState(false);
-  const { posts, setPosts, selectedCategoryIds } = usePostStore();
   const { setAllCategories } = useCategoryStore();
-
+  const [posts, setPosts] = useState([]);
+  const { selectedCategoryIds } = usePostStore();
   const fetchInitialData = async () => {
     try {
       setLoading(true);
@@ -37,15 +37,9 @@ const Posts = () => {
 
   useEffect(() => {
     fetchInitialData();
-  }, []);
+  }, [selectedCategoryIds]);
 
-  const filteredPosts = !isEmpty(selectedCategoryIds)
-    ? posts.filter(post =>
-        post.categories?.some(category =>
-          selectedCategoryIds.includes(category.id)
-        )
-      )
-    : posts;
+  const filteredPosts = posts;
 
   if (loading) return <PageLoader />;
 

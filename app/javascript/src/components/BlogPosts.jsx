@@ -10,7 +10,7 @@ import {
 import { useHistory } from "react-router-dom";
 
 import PageLoader from "./commons/PageLoader";
-import Navbar from "./Navbar"; // 👈 Import Navbar
+import Navbar from "./Sidebar"; // 👈 Import Navbar
 
 import postsApi from "../apis/post";
 

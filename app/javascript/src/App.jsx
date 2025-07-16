@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import Login from "./components/Authentication/Login";
 import Signup from "./components/Authentication/Signup";
 import BlogPosts from "./components/BlogPosts";
+import NoDataPage from "./components/commons/NoDataPage";
 import PrivateRoute from "./components/commons/PrivateRoute";
 import Posts from "./components/posts";
 import Edit from "./components/posts/Edit";
@@ -60,6 +61,7 @@ const App = () => {
           path="/my-posts"
           redirectRoute="/login"
         />
+        <Route exact component={NoDataPage} path="*" />
       </Switch>
     </Router>
   );
