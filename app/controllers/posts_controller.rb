@@ -8,7 +8,7 @@ class PostsController < ApplicationController
     render json: {
       posts: posts.map do |post|
         post.as_json(
-          only: [:id, :title, :description, :slug, :created_at],
+          only: [:id, :title, :description, :slug, :created_at, :updated_at, :status],
           include: {
             categories: { only: [:id, :name] }
           }
@@ -66,7 +66,27 @@ class PostsController < ApplicationController
     else
       render json: { errors: post.errors.full_messages }, status: :unprocessable_entity
     end
-end
+  end
+
+  def my_posts
+    posts = Post.includes(:categories, :organization)
+      .where(user_id: current_user.id)
+
+    render json: {
+      posts: posts.map do |post|
+        post.as_json(
+          only: [:id, :title, :description, :slug, :created_at, :updated_at, :status],
+          include: {
+            categories: { only: [:id, :name] }
+          }
+        ).merge(
+          author_id: post.user_id,
+          author_name: post.user.name,
+          organization_name: post.organization.name
+        )
+      end
+    }
+  end
 
   private
 

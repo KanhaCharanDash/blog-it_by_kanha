@@ -7,6 +7,8 @@ const update = ({ slug, payload }) =>
   axios.put(`/posts/${slug}`, {
     post: payload,
   });
-const postsApi = { fetch, create, show, update };
+const fetchMyPosts = () => axios.get("/posts/my_posts");
+
+const postsApi = { fetch, create, show, update, fetchMyPosts };
 
 export default postsApi;

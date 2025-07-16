@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 
 import Login from "./components/Authentication/Login";
 import Signup from "./components/Authentication/Signup";
+import BlogPosts from "./components/BlogPosts";
 import PrivateRoute from "./components/commons/PrivateRoute";
 import Posts from "./components/posts";
 import Edit from "./components/posts/Edit";
@@ -50,6 +51,13 @@ const App = () => {
           component={Edit}
           condition={isLoggedIn}
           path="/posts/:slug/edit"
+          redirectRoute="/login"
+        />
+        <PrivateRoute
+          exact
+          component={BlogPosts}
+          condition={isLoggedIn}
+          path="/my-posts"
           redirectRoute="/login"
         />
       </Switch>

@@ -1,7 +1,8 @@
 import React from "react";
 
-import { Typography, Button, Tag } from "@bigbinary/neetoui"; // ⬅️ Added Tag
+import { Typography, Button, Tag, Tooltip } from "@bigbinary/neetoui";
 import PropTypes from "prop-types";
+import { FiEdit } from "react-icons/fi"; // ✅ React icon
 import { useHistory, useParams } from "react-router-dom";
 
 import useAuthStore from "../stores/useAuthStore";
@@ -30,12 +31,14 @@ const Header = ({ title, showAddButton = false, postUserId = -1, drafted }) => {
           />
         )}
         {postUserId && userId && postUserId === userId && (
-          <Button
-            icon="ri-edit-box-line"
-            label="Edit post"
-            style="secondary"
-            onClick={() => history.push(`/posts/${slug}/edit`)}
-          />
+          <Tooltip content="Edit post" position="bottom">
+            <button
+              className="hover:text-primary-500 rounded p-1 text-gray-600"
+              onClick={() => history.push(`/posts/${slug}/edit`)}
+            >
+              <FiEdit size={18} />
+            </button>
+          </Tooltip>
         )}
       </div>
     </div>
@@ -46,7 +49,7 @@ Header.propTypes = {
   title: PropTypes.string.isRequired,
   showAddButton: PropTypes.bool,
   postUserId: PropTypes.number,
-  drafted: PropTypes.bool, // ✅ Add prop type
+  drafted: PropTypes.bool,
 };
 
 export default Header;

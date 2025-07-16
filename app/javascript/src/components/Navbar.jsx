@@ -7,6 +7,7 @@ import {
   RiFileAddLine,
   RiFolderLine,
   RiLogoutBoxRLine,
+  RiUser3Line, // 👤 Icon for My Posts
 } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
@@ -31,10 +32,8 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await authApi.logout();
-
-      // Correct Zustand usage
-      resetAuth();
-      resetAuthTokens();
+      resetAuth(); // Zustand logout
+      resetAuthTokens(); // Clear Axios headers
       window.location.href = "/";
     } catch (error) {
       Logger.error("Logout failed:", error);
@@ -58,6 +57,11 @@ const Navbar = () => {
           <Tooltip content="New Post" position="right">
             <Link className="text-gray-700 hover:text-blue-600" to="/posts/new">
               <RiFileAddLine size={24} />
+            </Link>
+          </Tooltip>
+          <Tooltip content="My Posts" position="right">
+            <Link className="text-gray-700 hover:text-blue-600" to="/my-posts">
+              <RiUser3Line size={24} />
             </Link>
           </Tooltip>
           <Tooltip content="Categories" position="right">
