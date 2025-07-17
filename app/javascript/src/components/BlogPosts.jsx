@@ -115,7 +115,7 @@ const BlogPosts = () => {
       render: categories => categories.map(cat => cat.name).join(", "),
     },
     {
-      title: "Last Published At",
+      title: "Last Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
       render: date =>

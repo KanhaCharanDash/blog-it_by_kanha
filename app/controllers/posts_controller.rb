@@ -4,7 +4,6 @@ class PostsController < ApplicationController
   def index
     posts = Post.includes(:categories, :user, :organization)
       .where(organization_id: current_user.organization_id)
-      .where(user_id: current_user.id)
 
     if params[:type].present?
       types = params[:type].split(",").map(&:strip).map(&:downcase)

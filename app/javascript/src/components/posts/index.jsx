@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 
 import classnames from "classnames";
+import queryString from "query-string"; // install this if not present
 import { isEmpty } from "ramda";
+import { useHistory, useLocation } from "react-router-dom";
 
 import PostCard from "./PostCard";
 
@@ -18,7 +20,10 @@ const Posts = () => {
   const [loading, setLoading] = useState(false);
   const { setAllCategories } = useCategoryStore();
   const [posts, setPosts] = useState([]);
-  const { selectedCategoryIds } = usePostStore();
+  const { selectedCategories } = usePostStore();
+  const history = useHistory();
+  const location = useLocation();
+
   const fetchInitialData = async () => {
     try {
       setLoading(true);
@@ -28,6 +33,36 @@ const Posts = () => {
       ]);
       setPosts(postsResponse.data.posts);
       setAllCategories(categoriesResponse.data);
+      history.replace("/posts");
+    } catch (error) {
+      logger.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchFilteredPosts = async () => {
+    try {
+      setLoading(true);
+
+      const selectedCategoryNames = selectedCategories
+        .map(cat => cat.name)
+        .join(",");
+
+      // Update query params using history
+      const currentParams = queryString.parse(location.search);
+      const newParams = {
+        ...currentParams,
+        type: selectedCategoryNames || undefined, // removes `type` if empty
+      };
+
+      history.replace({
+        pathname: location.pathname,
+        search: queryString.stringify(newParams),
+      });
+
+      const response = await postsApi.fetch({ type: selectedCategoryNames });
+      setPosts(response.data.posts);
     } catch (error) {
       logger.error(error);
     } finally {
@@ -36,8 +71,16 @@ const Posts = () => {
   };
 
   useEffect(() => {
+    if (selectedCategories.length) {
+      fetchFilteredPosts();
+    } else {
+      fetchInitialData();
+    }
+  }, [selectedCategories]);
+
+  useEffect(() => {
     fetchInitialData();
-  }, [selectedCategoryIds]);
+  }, []);
 
   const filteredPosts = posts;
 

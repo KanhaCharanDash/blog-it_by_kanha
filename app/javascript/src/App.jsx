@@ -2,7 +2,12 @@
 import React from "react";
 
 import { either, isEmpty, isNil } from "ramda";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import Login from "./components/Authentication/Login";
@@ -30,7 +35,7 @@ const App = () => {
           exact
           component={Posts}
           condition={isLoggedIn}
-          path="/"
+          path="/posts"
           redirectRoute="/login"
         />
         <PrivateRoute
@@ -61,6 +66,9 @@ const App = () => {
           path="/my-posts"
           redirectRoute="/login"
         />
+        <Route exact path="/">
+          <Redirect to="/posts" />
+        </Route>
         <Route exact component={NoDataPage} path="*" />
       </Switch>
     </Router>

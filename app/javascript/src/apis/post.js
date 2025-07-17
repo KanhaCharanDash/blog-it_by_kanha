@@ -1,6 +1,11 @@
 import axios from "axios";
+import queryString from "query-string";
 
-const fetch = () => axios.get("/posts");
+const fetch = params => {
+  const query = queryString.stringify(params);
+
+  return axios.get(`/posts${query ? `?${query}` : ""}`);
+};
 const create = payload => axios.post("/posts", payload);
 const show = slug => axios.get(`/posts/${slug}`);
 const update = ({ slug, payload }) =>
