@@ -30,6 +30,10 @@ const usePostStore = create(
 
         return names ? `?type=${names}` : "";
       },
+      showCategories: false,
+      toggleSidebar: () =>
+        set(state => ({ showCategories: !state.showCategories })),
+      closeSidebar: () => set({ showCategories: false }),
     }),
     {
       name: "post-store", // unique name for localStorage

@@ -17,13 +17,14 @@ import authApi from "../../apis/auth";
 import { resetAuthTokens } from "../../apis/axios";
 import useAuthStore from "../stores/useAuthStore";
 import useCategoryStore from "../stores/useCategoryStore";
+import usePostStore from "../stores/usePostStore";
 
 const Navbar = () => {
   const sidebarRef = useRef(null);
   const categorySidebarRef = useRef(null);
   const modalRef = useRef(null);
 
-  const [showCategories, setShowCategories] = useState(false);
+  const { showCategories, toggleSidebar } = usePostStore();
   const [showLogout, setShowLogout] = useState(false);
 
   const { categories } = useCategoryStore();
@@ -67,7 +68,7 @@ const Navbar = () => {
           <Tooltip content="Categories" position="right">
             <button
               className="text-gray-700 hover:text-blue-600"
-              onClick={() => setShowCategories(prev => !prev)}
+              onClick={toggleSidebar}
             >
               <RiFolderLine size={24} />
             </button>
