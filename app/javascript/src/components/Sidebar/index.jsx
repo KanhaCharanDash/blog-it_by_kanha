@@ -7,22 +7,24 @@ import {
   RiFileAddLine,
   RiFolderLine,
   RiLogoutBoxRLine,
+  RiUser3Line, // 👤 Icon for My Posts
 } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
-import CategorySidebar from "./Sidebar/CategorySidebar";
-import useAuthStore from "./stores/useAuthStore";
-import useCategoryStore from "./stores/useCategoryStore";
+import CategorySidebar from "./CategorySidebar";
 
-import authApi from "../apis/auth";
-import { resetAuthTokens } from "../apis/axios";
+import authApi from "../../apis/auth";
+import { resetAuthTokens } from "../../apis/axios";
+import useAuthStore from "../stores/useAuthStore";
+import useCategoryStore from "../stores/useCategoryStore";
+import usePostStore from "../stores/usePostStore";
 
 const Navbar = () => {
   const sidebarRef = useRef(null);
   const categorySidebarRef = useRef(null);
   const modalRef = useRef(null);
 
-  const [showCategories, setShowCategories] = useState(false);
+  const { showCategories, toggleSidebar } = usePostStore();
   const [showLogout, setShowLogout] = useState(false);
 
   const { categories } = useCategoryStore();
@@ -31,10 +33,8 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await authApi.logout();
-
-      // Correct Zustand usage
-      resetAuth();
-      resetAuthTokens();
+      resetAuth(); // Zustand logout
+      resetAuthTokens(); // Clear Axios headers
       window.location.href = "/";
     } catch (error) {
       Logger.error("Logout failed:", error);
@@ -60,10 +60,15 @@ const Navbar = () => {
               <RiFileAddLine size={24} />
             </Link>
           </Tooltip>
+          <Tooltip content="My Posts" position="right">
+            <Link className="text-gray-700 hover:text-blue-600" to="/my-posts">
+              <RiUser3Line size={24} />
+            </Link>
+          </Tooltip>
           <Tooltip content="Categories" position="right">
             <button
               className="text-gray-700 hover:text-blue-600"
-              onClick={() => setShowCategories(prev => !prev)}
+              onClick={toggleSidebar}
             >
               <RiFolderLine size={24} />
             </button>

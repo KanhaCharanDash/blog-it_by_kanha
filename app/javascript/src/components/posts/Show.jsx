@@ -9,7 +9,7 @@ import CategoryBadgeList from "./CategoryBadgeList";
 import postsApi from "../../apis/post";
 import Header from "../commons/Header";
 import PageLoader from "../commons/PageLoader";
-import Navbar from "../Navbar";
+import Navbar from "../Sidebar"; // 👈 Import Navbar
 
 const formatDate = dateString => {
   const options = { day: "numeric", month: "long", year: "numeric" };
@@ -48,7 +48,11 @@ const Show = () => {
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto px-4 pt-2 md:px-12 md:pt-10">
         {/* Category badges */}
-        <Header title={post.title || "Loading..."} />
+        <Header
+          drafted={post.status === "drafted"}
+          postUserId={post.user_id}
+          title={post.title || "Loading..."}
+        />
         <div className="mb-4">
           <CategoryBadgeList categories={post.categories} />
         </div>

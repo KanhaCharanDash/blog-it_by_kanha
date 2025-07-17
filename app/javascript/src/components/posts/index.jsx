@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 
 import classnames from "classnames";
+import queryString from "query-string"; // install this if not present
 import { isEmpty } from "ramda";
+import { useHistory, useLocation } from "react-router-dom";
 
 import PostCard from "./PostCard";
 
@@ -10,14 +12,17 @@ import postsApi from "../../apis/post";
 import Header from "../commons/Header";
 import NoDataPage from "../commons/NoDataPage";
 import PageLoader from "../commons/PageLoader";
-import Navbar from "../Navbar";
+import Navbar from "../Sidebar";
 import useCategoryStore from "../stores/useCategoryStore";
 import usePostStore from "../stores/usePostStore";
 
 const Posts = () => {
   const [loading, setLoading] = useState(false);
-  const { posts, setPosts, selectedCategoryIds } = usePostStore();
   const { setAllCategories } = useCategoryStore();
+  const [posts, setPosts] = useState([]);
+  const { selectedCategories } = usePostStore();
+  const history = useHistory();
+  const location = useLocation();
 
   const fetchInitialData = async () => {
     try {
@@ -28,6 +33,36 @@ const Posts = () => {
       ]);
       setPosts(postsResponse.data.posts);
       setAllCategories(categoriesResponse.data);
+      history.replace("/posts");
+    } catch (error) {
+      logger.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchFilteredPosts = async () => {
+    try {
+      setLoading(true);
+
+      const selectedCategoryNames = selectedCategories
+        .map(cat => cat.name)
+        .join(",");
+
+      // Update query params using history
+      const currentParams = queryString.parse(location.search);
+      const newParams = {
+        ...currentParams,
+        type: selectedCategoryNames || undefined, // removes `type` if empty
+      };
+
+      history.replace({
+        pathname: location.pathname,
+        search: queryString.stringify(newParams),
+      });
+
+      const response = await postsApi.fetch({ type: selectedCategoryNames });
+      setPosts(response.data.posts);
     } catch (error) {
       logger.error(error);
     } finally {
@@ -36,16 +71,18 @@ const Posts = () => {
   };
 
   useEffect(() => {
+    if (selectedCategories.length) {
+      fetchFilteredPosts();
+    } else {
+      fetchInitialData();
+    }
+  }, [selectedCategories]);
+
+  useEffect(() => {
     fetchInitialData();
   }, []);
 
-  const filteredPosts = !isEmpty(selectedCategoryIds)
-    ? posts.filter(post =>
-        post.categories?.some(category =>
-          selectedCategoryIds.includes(category.id)
-        )
-      )
-    : posts;
+  const filteredPosts = posts;
 
   if (loading) return <PageLoader />;
 

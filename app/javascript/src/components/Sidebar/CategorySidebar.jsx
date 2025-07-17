@@ -8,7 +8,7 @@ import usePostStore from "../stores/usePostStore";
 
 const CategorySidebar = forwardRef(({ modalRef }, ref) => {
   const { categories, setCategory } = useCategoryStore();
-  const { selectedCategoryIds, toggleCategoryId } = usePostStore();
+  const { selectedCategories, toggleCategory } = usePostStore();
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -46,7 +46,9 @@ const CategorySidebar = forwardRef(({ modalRef }, ref) => {
         </div>
         <div className="space-y-2 overflow-y-auto pr-1">
           {categories.map(category => {
-            const isSelected = selectedCategoryIds.includes(category.id);
+            const isSelected = selectedCategories.some(
+              c => c.id === category.id
+            );
 
             return (
               <Button
@@ -57,7 +59,7 @@ const CategorySidebar = forwardRef(({ modalRef }, ref) => {
                 className={`w-full justify-start ${
                   isSelected ? "bg-blue-600 text-white" : "bg-gray-100"
                 }`}
-                onClick={() => toggleCategoryId(category.id)}
+                onClick={() => toggleCategory(category)}
               />
             );
           })}
