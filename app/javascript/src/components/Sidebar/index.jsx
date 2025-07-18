@@ -96,7 +96,6 @@ const Navbar = () => {
           />
         </div>
       </div>
-      {/* Category sidebar if toggled */}
       {showCategories && (
         <CategorySidebar modalRef={modalRef} ref={categorySidebarRef} />
       )}
