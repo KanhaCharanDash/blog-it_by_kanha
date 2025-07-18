@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  # Serve JSON-only API routes
   constraints(lambda { |req| req.format == :json }) do
     resources :posts, only: %i[index create show update destroy], param: :slug do
       collection do
@@ -15,7 +14,6 @@ Rails.application.routes.draw do
     resource :session, only: [:create, :destroy]
   end
 
-  # Fallback route for React frontend (SPA)
   root "home#index"
   get "*path", to: "home#index", constraints: ->(req) { !req.xhr? && req.format.html? }
 end

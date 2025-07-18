@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 const usePostStore = create(
   persist(
     (set, get) => ({
-      selectedCategories: [], // [{ id, name }]
+      selectedCategories: [],
 
       toggleCategory: category => {
         const { selectedCategories } = get();
@@ -36,7 +36,7 @@ const usePostStore = create(
       closeSidebar: () => set({ showCategories: false }),
     }),
     {
-      name: "post-store", // unique name for localStorage
+      name: "post-store",
     }
   )
 );

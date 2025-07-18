@@ -7,7 +7,7 @@ import {
   RiFileAddLine,
   RiFolderLine,
   RiLogoutBoxRLine,
-  RiUser3Line, // 👤 Icon for My Posts
+  RiUser3Line,
 } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
@@ -24,15 +24,15 @@ const Navbar = () => {
   const modalRef = useRef(null);
 
   const { showCategories, toggleSidebar } = usePostStore();
-  const [showLogout, setShowLogout] = useState(false);
+  const [isLogoutVisible, setIsLogoutVisible] = useState(false);
 
   const { resetAuth } = useAuthStore.getState();
 
   const handleLogout = async () => {
     try {
       await authApi.logout();
-      resetAuth(); // Zustand logout
-      resetAuthTokens(); // Clear Axios headers
+      resetAuth();
+      resetAuthTokens();
       window.location.href = "/";
     } catch (error) {
       Logger.error("Logout failed:", error);
@@ -41,12 +41,11 @@ const Navbar = () => {
 
   return (
     <div className="flex h-screen">
-      {/* Sidebar container */}
+      {/* Sidebar */}
       <div
         className="flex h-full w-14 flex-col items-center justify-between bg-white py-4 shadow"
         ref={sidebarRef}
       >
-        {/* Top icons */}
         <div className="flex flex-col items-center space-y-6">
           <Tooltip content="Blog Posts" position="right">
             <Link className="text-gray-700 hover:text-blue-600" to="/">
@@ -66,15 +65,15 @@ const Navbar = () => {
           <Tooltip content="Categories" position="right">
             <button
               className="text-gray-700 hover:text-blue-600"
+              type="button"
               onClick={toggleSidebar}
             >
               <RiFolderLine size={24} />
             </button>
           </Tooltip>
         </div>
-        {/* Bottom Profile */}
         <div className="flex flex-col items-center space-y-6">
-          {showLogout && (
+          {isLogoutVisible && (
             <Button
               className="mb-2"
               icon={RiLogoutBoxRLine}
@@ -92,7 +91,7 @@ const Navbar = () => {
               imageUrl:
                 "https://ui-avatars.com/api/?name=John+Doe&background=random",
             }}
-            onClick={() => setShowLogout(prev => !prev)}
+            onClick={() => setIsLogoutVisible(previous => !previous)}
           />
         </div>
       </div>

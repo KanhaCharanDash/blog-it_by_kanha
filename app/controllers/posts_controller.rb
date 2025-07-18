@@ -69,7 +69,6 @@ class PostsController < ApplicationController
       return render_error("You are not authorized to edit this post.", :unauthorized)
     end
 
-    # Assign categories directly, separate from post_params
     if params[:post][:category_ids].present?
       post.categories = Category.where(id: params[:post][:category_ids])
     end

@@ -1,6 +1,7 @@
 import React from "react";
 
-import { Button, Input, Select } from "@bigbinary/neetoui";
+import { Button, Input, Select, Typography } from "@bigbinary/neetoui";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 const Signup = ({
@@ -14,58 +15,60 @@ const Signup = ({
   selectedOrganization,
   setSelectedOrganization,
 }) => {
-  const organizationOptions = organizations.map(org => ({
-    label: org.name,
-    value: org.id,
+  const { t } = useTranslation();
+
+  const organizationOptions = organizations.map(organization => ({
+    label: organization.name,
+    value: organization.id,
   }));
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold leading-9 text-gray-700">
-          Sign Up
-        </h2>
+        <Typography className="mt-6 text-center text-gray-700" style="h2">
+          {t("signup.heading")}
+        </Typography>
         <div className="text-center">
           <Link
             className="mt-2 text-sm font-medium text-bb-purple transition duration-150 ease-in-out focus:underline focus:outline-none"
             to="/"
           >
-            Or Login Now
+            {t("signup.loginLink")}
           </Link>
         </div>
         <form className="mt-8 flex flex-col gap-y-6" onSubmit={handleSubmit}>
           <Input
-            label="Name"
-            placeholder="Oliver"
-            onChange={e => setName(e.target.value)}
+            label={t("signup.nameLabel")}
+            placeholder={t("signup.namePlaceholder")}
+            onChange={event => setName(event.target.value)}
           />
           <Input
-            label="Email"
-            placeholder="oliver@example.com"
+            label={t("signup.emailLabel")}
+            placeholder={t("signup.emailPlaceholder")}
             type="email"
-            onChange={e => setEmail(e.target.value)}
+            onChange={event => setEmail(event.target.value)}
           />
           <Input
-            label="Password"
-            placeholder="********"
+            label={t("signup.passwordLabel")}
+            placeholder={t("signup.passwordPlaceholder")}
             type="password"
-            onChange={e => setPassword(e.target.value)}
+            onChange={event => setPassword(event.target.value)}
           />
           <Input
-            label="Password Confirmation"
-            placeholder="********"
+            label={t("signup.passwordConfirmationLabel")}
+            placeholder={t("signup.passwordPlaceholder")}
             type="password"
-            onChange={e => setPasswordConfirmation(e.target.value)}
+            onChange={event => setPasswordConfirmation(event.target.value)}
           />
           <Select
-            label="Organization"
+            label={t("signup.organizationLabel")}
             options={organizationOptions}
-            placeholder="Select your organization"
+            placeholder={t("signup.organizationPlaceholder")}
             value={selectedOrganization}
             onChange={setSelectedOrganization}
           />
           <Button
-            label="Register"
+            label={t("signup.registerButton")}
             loading={loading}
             style="primary"
             type="submit"

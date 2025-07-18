@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import classnames from "classnames";
 import queryString from "query-string";
 import { isEmpty } from "ramda";
+import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router-dom";
 
 import PostCard from "./PostCard";
@@ -15,9 +16,9 @@ import Navbar from "../Sidebar";
 import usePostStore from "../stores/usePostStore";
 
 const Posts = () => {
+  const { t } = useTranslation();
   const { selectedCategories } = usePostStore();
-  const { data: posts = [], isLoading: loadingPosts } =
-    usePosts(selectedCategories);
+  const { data: posts = [], isLoading } = usePosts(selectedCategories);
   const history = useHistory();
   const location = useLocation();
 
@@ -26,34 +27,25 @@ const Posts = () => {
       .map(cat => cat.name)
       .join(",");
     const currentParams = queryString.parse(location.search);
-    const newParams = {
-      ...currentParams,
-      type: selectedCategoryNames || undefined,
-    };
 
     history.replace({
       pathname: location.pathname,
-      search: queryString.stringify(newParams),
+      search: queryString.stringify({
+        ...currentParams,
+        type: selectedCategoryNames || undefined,
+      }),
     });
   }, [selectedCategories]);
 
-  const filteredPosts = posts;
+  if (isLoading) return <PageLoader />;
 
-  if (loadingPosts) return <PageLoader />;
-
-  if (isEmpty(filteredPosts)) return <NoDataPage />;
+  if (isEmpty(posts)) return <NoDataPage />;
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* Left Sidebar (Navbar) */}
       <Navbar />
-      {/* Right Side: Header + Content */}
       <div className="flex flex-1 flex-col">
-        {/* Header (Fixed Height) */}
-        <div className="">
-          <Header showAddButton title="Blog Posts" />
-        </div>
-        {/* Scrollable Content */}
+        <Header showAddButton title={t("posts.blogPosts")} />
         <div
           className={classnames(
             "flex-1 overflow-y-auto px-4 pb-6 pt-4 md:px-6",
@@ -61,8 +53,8 @@ const Posts = () => {
           )}
         >
           <div className="space-y-6">
-            {filteredPosts.map((post, index) => (
-              <PostCard key={index} post={post} />
+            {posts.map(post => (
+              <PostCard key={post.id} post={post} />
             ))}
           </div>
         </div>

@@ -1,3 +1,105 @@
 {
-  "helloWorld": "Hello World"
+  "posts": {
+    "blogPosts": "Blog Posts"
+  },
+  "postForm": {
+    "editHeading": "Edit blog post",
+    "newHeading": "New blog post",
+    "cancel": "Cancel",
+    "publish": "Publish",
+    "publishNow": "Publish now",
+    "saveAsDraft": "Save as draft",
+    "titleLabel": "Title*",
+    "titlePlaceholder": "Enter title",
+    "categoryLabel": "Category*",
+    "categoryPlaceholder": "Select categories",
+    "descriptionLabel": "Description*",
+    "descriptionPlaceholder": "Enter description"
+  },
+  "postCard": {
+    "unknownAuthor": "Unknown Author"
+  },
+  "showPost": {
+    "unknownAuthor": "Unknown Author",
+    "loading": "Loading..."
+  },
+  "editPost": {
+    "updateError": "Error updating post"
+  },
+  "categories": {
+    "title": "Categories",
+    "toastr": {
+      "success": "Category added successfully",
+      "error": "Failed to add category"
+    },
+    "addModal": {
+      "title": "Add New Category",
+      "subtitle": "Create and manage blog post categories.",
+      "nameLabel": "Category Title",
+      "namePlaceholder": "Enter category name",
+      "adding": "Adding...",
+      "add": "Add"
+    }
+  },
+  "common": {
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "actions": "Actions"
+  },
+  "header": {
+    "draft": "Draft",
+    "addNewPost": "Add new post",
+    "editPost": "Edit post"
+  },
+  "noDataPage": {
+    "notFound": "The page you're looking for can't be found",
+    "addNewPost": "Add New Post"
+  },
+  "blogPosts": {
+    "heading": "My blog posts",
+    "articles": "articles",
+    "error": "Failed to load posts",
+    "columns": {
+      "title": "Title",
+      "category": "Category",
+      "updatedAt": "Last Updated At",
+      "status": "Status"
+    },
+    "actions": {
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "delete": "Delete"
+    },
+    "deleteConfirmation": "Are you sure you want to delete this post?",
+    "toastr": {
+      "updateSuccess": "Post status updated successfully.",
+      "updateError": "Failed to update post status.",
+      "deleteSuccess": "Post deleted successfully.",
+      "deleteError": "Something went wrong while deleting the post.",
+      "fetchError": "Failed to fetch posts."
+    }
+  },
+  "login": {
+    "heading": "Sign In",
+    "signupLink": "Or Register Now",
+    "emailLabel": "Email",
+    "emailPlaceholder": "oliver@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "********",
+    "button": "Sign In"
+  },
+  "signup": {
+    "heading": "Sign Up",
+    "loginLink": "Or Login Now",
+    "nameLabel": "Name",
+    "namePlaceholder": "Oliver",
+    "emailLabel": "Email",
+    "emailPlaceholder": "oliver@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "********",
+    "passwordConfirmationLabel": "Password Confirmation",
+    "organizationLabel": "Organization",
+    "organizationPlaceholder": "Select your organization",
+    "registerButton": "Register"
+  }
 }
