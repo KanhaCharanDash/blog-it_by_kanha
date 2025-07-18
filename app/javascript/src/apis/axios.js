@@ -51,7 +51,14 @@ const handleErrorResponse = error => {
     window.location.href = "/";
   }
 
-  const errorMessage = errorResponse?.data?.error ?? DEFAULT_ERROR_NOTIFICATION;
+  const responseData = errorResponse?.data;
+  let errorMessage = DEFAULT_ERROR_NOTIFICATION;
+
+  if (responseData?.error) {
+    errorMessage = responseData.error;
+  } else if (Array.isArray(responseData?.errors)) {
+    errorMessage = responseData.errors.join(", ");
+  }
 
   Toastr.error(errorMessage);
 

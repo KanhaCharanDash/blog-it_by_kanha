@@ -23,12 +23,14 @@ const Login = ({ handleSubmit, setEmail, setPassword, loading }) => {
         </div>
         <form className="mt-8 flex flex-col gap-y-6" onSubmit={handleSubmit}>
           <Input
+            required
             label={t("login.emailLabel")}
             placeholder={t("login.emailPlaceholder")}
             type="email"
             onChange={event => setEmail(event.target.value)}
           />
           <Input
+            required
             label={t("login.passwordLabel")}
             placeholder={t("login.passwordPlaceholder")}
             type="password"

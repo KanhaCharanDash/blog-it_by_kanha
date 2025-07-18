@@ -56,13 +56,12 @@
     "addNewPost": "Add New Post"
   },
   "blogPosts": {
-    "heading": "My blog posts",
+    "heading": "My Blog Posts",
     "articles": "articles",
-    "error": "Failed to load posts",
     "columns": {
       "title": "Title",
       "category": "Category",
-      "updatedAt": "Last Updated At",
+      "updatedAt": "Updated At",
       "status": "Status"
     },
     "actions": {
@@ -70,15 +69,21 @@
       "unpublish": "Unpublish",
       "delete": "Delete"
     },
-    "deleteConfirmation": "Are you sure you want to delete this post?",
+    "alert": {
+      "title": "Are you sure?",
+      "message": "This action cannot be undone. This will permanently delete the post.",
+      "confirm": "Yes, Delete",
+      "cancel": "Cancel"
+    },
     "toastr": {
-      "updateSuccess": "Post status updated successfully.",
-      "updateError": "Failed to update post status.",
+      "updateSuccess": "Post updated successfully.",
+      "updateError": "Failed to update post.",
       "deleteSuccess": "Post deleted successfully.",
-      "deleteError": "Something went wrong while deleting the post.",
-      "fetchError": "Failed to fetch posts."
+      "deleteError": "Failed to delete the post.",
+      "fetchError": "Failed to fetch posts. Please try again."
     }
   },
+
   "login": {
     "heading": "Sign In",
     "signupLink": "Or Register Now",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Typography,
@@ -6,6 +6,7 @@ import {
   Table,
   Dropdown,
   Toastr,
+  Alert,
 } from "@bigbinary/neetoui";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
@@ -28,6 +29,9 @@ const BlogPosts = () => {
   const { mutate: updatePost } = useUpdatePost();
   const { mutate: deletePost } = useDeletePost();
 
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [slugToDelete, setSlugToDelete] = useState(null);
+
   const handleStatusChange = (slug, newStatus) => {
     updatePost(
       { slug, payload: { status: newStatus } },
@@ -38,14 +42,18 @@ const BlogPosts = () => {
     );
   };
 
-  const handleDelete = slug => {
-    const confirmDelete = window.confirm(t("blogPosts.deleteConfirmation"));
-    if (confirmDelete) {
-      deletePost(slug, {
-        onSuccess: () => Toastr.success(t("blogPosts.toastr.deleteSuccess")),
-        onError: () => Toastr.error(t("blogPosts.toastr.deleteError")),
-      });
-    }
+  const handleDelete = postSlug => {
+    setSlugToDelete(postSlug);
+    setIsAlertOpen(true);
+  };
+
+  const confirmDelete = () => {
+    deletePost(slugToDelete, {
+      onSuccess: () => Toastr.success(t("blogPosts.toastr.deleteSuccess")),
+      onError: () => Toastr.error(t("blogPosts.toastr.deleteError")),
+    });
+    setIsAlertOpen(false);
+    setSlugToDelete(null);
   };
 
   const getDropdown = post => (
@@ -150,6 +158,15 @@ const BlogPosts = () => {
           defaultPageSize={10}
           rowData={Array.isArray(posts) ? posts : []}
           totalCount={posts.length}
+        />
+        <Alert
+          cancelButtonLabel={t("blogPosts.alert.cancel")}
+          isOpen={isAlertOpen}
+          message={t("blogPosts.alert.message")}
+          submitButtonLabel={t("blogPosts.alert.confirm")}
+          title={t("blogPosts.alert.title")}
+          onClose={() => setIsAlertOpen(false)}
+          onSubmit={confirmDelete}
         />
       </div>
     </div>

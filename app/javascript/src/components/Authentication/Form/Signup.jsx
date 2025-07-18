@@ -38,6 +38,7 @@ const Signup = ({
         </div>
         <form className="mt-8 flex flex-col gap-y-6" onSubmit={handleSubmit}>
           <Input
+            required
             label={t("signup.nameLabel")}
             placeholder={t("signup.namePlaceholder")}
             onChange={event => setName(event.target.value)}
@@ -49,12 +50,14 @@ const Signup = ({
             onChange={event => setEmail(event.target.value)}
           />
           <Input
+            required
             label={t("signup.passwordLabel")}
             placeholder={t("signup.passwordPlaceholder")}
             type="password"
             onChange={event => setPassword(event.target.value)}
           />
           <Input
+            required
             label={t("signup.passwordConfirmationLabel")}
             placeholder={t("signup.passwordPlaceholder")}
             type="password"
