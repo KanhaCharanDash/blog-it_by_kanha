@@ -7,7 +7,7 @@ import {
   RiFileAddLine,
   RiFolderLine,
   RiLogoutBoxRLine,
-  RiUser3Line, // 👤 Icon for My Posts
+  RiUser3Line,
 } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
@@ -24,15 +24,15 @@ const Navbar = () => {
   const modalRef = useRef(null);
 
   const { showCategories, toggleSidebar } = usePostStore();
-  const [showLogout, setShowLogout] = useState(false);
+  const [isLogoutVisible, setIsLogoutVisible] = useState(false);
 
-  const { resetAuth } = useAuthStore.getState();
+  const { resetAuth, userName, email } = useAuthStore();
 
   const handleLogout = async () => {
     try {
       await authApi.logout();
-      resetAuth(); // Zustand logout
-      resetAuthTokens(); // Clear Axios headers
+      resetAuth();
+      resetAuthTokens();
       window.location.href = "/";
     } catch (error) {
       Logger.error("Logout failed:", error);
@@ -41,12 +41,11 @@ const Navbar = () => {
 
   return (
     <div className="flex h-screen">
-      {/* Sidebar container */}
+      {/* Sidebar */}
       <div
-        className="flex h-full w-14 flex-col items-center justify-between bg-white py-4 shadow"
+        className="relative flex h-full w-14 flex-col items-center justify-between bg-white py-4 shadow"
         ref={sidebarRef}
       >
-        {/* Top icons */}
         <div className="flex flex-col items-center space-y-6">
           <Tooltip content="Blog Posts" position="right">
             <Link className="text-gray-700 hover:text-blue-600" to="/">
@@ -66,37 +65,45 @@ const Navbar = () => {
           <Tooltip content="Categories" position="right">
             <button
               className="text-gray-700 hover:text-blue-600"
+              type="button"
               onClick={toggleSidebar}
             >
               <RiFolderLine size={24} />
             </button>
           </Tooltip>
         </div>
-        {/* Bottom Profile */}
-        <div className="flex flex-col items-center space-y-6">
-          {showLogout && (
-            <Button
-              className="mb-2"
-              icon={RiLogoutBoxRLine}
-              label="Logout"
-              size="small"
-              style="secondary"
-              onClick={handleLogout}
-            />
-          )}
+        <div className="relative mb-2">
           <Avatar
             className="cursor-pointer"
             size="small"
             user={{
-              name: "John Doe",
-              imageUrl:
-                "https://ui-avatars.com/api/?name=John+Doe&background=random",
+              name: userName || "Guest",
+              imageUrl: `https://ui-avatars.com/api/?name=${
+                userName || "Guest"
+              }&background=random`,
             }}
-            onClick={() => setShowLogout(prev => !prev)}
+            onClick={() => setIsLogoutVisible(prev => !prev)}
           />
+          {isLogoutVisible && (
+            <div className="absolute bottom-0 left-16 z-50 w-60 rounded-lg border bg-white p-4 shadow-lg">
+              <div className="mb-3">
+                <p className="text-sm font-semibold text-gray-700">
+                  {userName}
+                </p>
+                <p className="break-words text-xs text-gray-500">{email}</p>
+              </div>
+              <Button
+                fullWidth
+                icon={RiLogoutBoxRLine}
+                label="Logout"
+                size="small"
+                style="secondary"
+                onClick={handleLogout}
+              />
+            </div>
+          )}
         </div>
       </div>
-      {/* Category sidebar if toggled */}
       {showCategories && (
         <CategorySidebar modalRef={modalRef} ref={categorySidebarRef} />
       )}

@@ -6,13 +6,13 @@ import LoginForm from "components/Authentication/Form/Login";
 import Logger from "js-logger";
 
 import useAuthStore from "../stores/useAuthStore";
-// 👈 import store
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const setAuth = useAuthStore(state => state.setAuth); // 👈 extract store method
+  const setAuth = useAuthStore(state => state.setAuth);
 
   const handleSubmit = async event => {
     event.preventDefault();
@@ -24,16 +24,15 @@ const Login = () => {
         userId: response.data.id,
         userName: response.data.name,
         email: email.toLowerCase(),
-        organizationId: response.data.organization_id, // ✅ must match key from backend
+        organizationId: response.data.organization_id,
       };
 
-      Logger.info("Login successful", response.data);
-      setAuth(authData); // ✅ set data in Zustand store
-      setAuthHeaders(); // ✅ set token in axios
+      setAuth(authData);
+      setAuthHeaders();
       window.location.href = "/";
     } catch (error) {
-      Logger.error(error);
       setLoading(false);
+      Logger.error("Login failed:", error);
     }
   };
 

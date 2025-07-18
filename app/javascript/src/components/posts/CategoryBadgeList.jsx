@@ -1,5 +1,3 @@
-// app/javascript/src/components/commons/CategoryBadgeList.jsx
-
 import React from "react";
 
 import { Typography } from "@bigbinary/neetoui";

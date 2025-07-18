@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Typography,
@@ -6,7 +6,9 @@ import {
   Table,
   Dropdown,
   Toastr,
+  Alert,
 } from "@bigbinary/neetoui";
+import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import PageLoader from "./commons/PageLoader";
@@ -19,55 +21,68 @@ import {
 } from "../hooks/reactQuery/usePostsApi";
 
 const BlogPosts = () => {
+  const { t } = useTranslation();
   const history = useHistory();
   const { Menu, MenuItem, Divider } = Dropdown;
 
   const { data: posts = [], isLoading, isError } = useMyPosts();
-
   const { mutate: updatePost } = useUpdatePost();
   const { mutate: deletePost } = useDeletePost();
+
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [slugToDelete, setSlugToDelete] = useState(null);
 
   const handleStatusChange = (slug, newStatus) => {
     updatePost(
       { slug, payload: { status: newStatus } },
       {
-        onSuccess: () => Toastr.success("Post status updated successfully."),
-        onError: () => Toastr.error("Failed to update post status."),
+        onSuccess: () => Toastr.success(t("blogPosts.toastr.updateSuccess")),
+        onError: () => Toastr.error(t("blogPosts.toastr.updateError")),
       }
     );
   };
 
-  const handleDelete = slug => {
-    if (window.confirm("Are you sure you want to delete this post?")) {
-      deletePost(slug, {
-        onSuccess: () => Toastr.success("Post deleted successfully."),
-        onError: () =>
-          Toastr.error("Something went wrong while deleting the post."),
-      });
-    }
+  const handleDelete = postSlug => {
+    setSlugToDelete(postSlug);
+    setIsAlertOpen(true);
+  };
+
+  const confirmDelete = () => {
+    deletePost(slugToDelete, {
+      onSuccess: () => Toastr.success(t("blogPosts.toastr.deleteSuccess")),
+      onError: () => Toastr.error(t("blogPosts.toastr.deleteError")),
+    });
+    setIsAlertOpen(false);
+    setSlugToDelete(null);
   };
 
   const getDropdown = post => (
-    <Dropdown buttonStyle="text" label="Actions" position="bottom-end">
+    <Dropdown
+      buttonStyle="text"
+      label={t("common.actions")}
+      position="bottom-end"
+    >
       <Menu>
         {post.status === "drafted" ? (
           <MenuItem onClick={() => handleStatusChange(post.slug, "published")}>
-            Publish
+            {t("blogPosts.actions.publish")}
           </MenuItem>
         ) : (
           <MenuItem onClick={() => handleStatusChange(post.slug, "drafted")}>
-            Unpublish
+            {t("blogPosts.actions.unpublish")}
           </MenuItem>
         )}
         <Divider />
-        <MenuItem onClick={() => handleDelete(post.slug)}>Delete</MenuItem>
+        <MenuItem onClick={() => handleDelete(post.slug)}>
+          {t("blogPosts.actions.delete")}
+        </MenuItem>
       </Menu>
     </Dropdown>
   );
 
   const columns = [
     {
-      title: "Title",
+      title: t("blogPosts.columns.title"),
       dataIndex: "title",
       key: "title",
       render: (title, record) => {
@@ -87,13 +102,14 @@ const BlogPosts = () => {
       },
     },
     {
-      title: "Category",
+      title: t("blogPosts.columns.category"),
       dataIndex: "categories",
       key: "categories",
-      render: categories => categories.map(cat => cat.name).join(", "),
+      render: categories =>
+        categories.map(category => category.name).join(", "),
     },
     {
-      title: "Last Updated At",
+      title: t("blogPosts.columns.updatedAt"),
       dataIndex: "updated_at",
       key: "updated_at",
       render: date =>
@@ -105,7 +121,7 @@ const BlogPosts = () => {
           : "--",
     },
     {
-      title: "Status",
+      title: t("blogPosts.columns.status"),
       dataIndex: "status",
       key: "status",
       render: status =>
@@ -120,17 +136,21 @@ const BlogPosts = () => {
 
   if (isLoading) return <PageLoader />;
 
-  if (isError) return <div>Failed to load posts</div>;
+  if (isError) {
+    Toastr.error(t("blogPosts.toastr.fetchError"));
+
+    return null;
+  }
 
   return (
     <div className="flex h-screen">
       <Navbar />
       <div className="flex-1 overflow-y-auto px-6 py-6">
         <Typography className="mb-2" style="h2">
-          My blog posts
+          {t("blogPosts.heading")}
         </Typography>
         <Typography className="mb-6 text-gray-600" style="body2">
-          {posts.length} articles
+          {posts.length} {t("blogPosts.articles")}
         </Typography>
         <Table
           columnData={columns}
@@ -138,6 +158,15 @@ const BlogPosts = () => {
           defaultPageSize={10}
           rowData={Array.isArray(posts) ? posts : []}
           totalCount={posts.length}
+        />
+        <Alert
+          cancelButtonLabel={t("blogPosts.alert.cancel")}
+          isOpen={isAlertOpen}
+          message={t("blogPosts.alert.message")}
+          submitButtonLabel={t("blogPosts.alert.confirm")}
+          title={t("blogPosts.alert.title")}
+          onClose={() => setIsAlertOpen(false)}
+          onSubmit={confirmDelete}
         />
       </div>
     </div>

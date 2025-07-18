@@ -14,9 +14,11 @@ const alias = {
   apis: absolutePath("src/apis"),
   common: absolutePath("src/common"),
   components: absolutePath("src/components"),
-    constants: absolutePath("src/constants"),
+  constants: absolutePath("src/constants"),
+  hooks: absolutePath("src/hooks"),
   utils: absolutePath("src/utils"),
-
+  stores: absolutePath("src/stores"),
+  commons: absolutePath("src/components/commons"),
   assets: absolutePath("../assets"),
 };
 

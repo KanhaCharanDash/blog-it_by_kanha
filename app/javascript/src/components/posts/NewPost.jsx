@@ -6,10 +6,9 @@ import { useHistory } from "react-router-dom";
 import PostForm from "./PostForm";
 
 import { useCategories } from "../../hooks/reactQuery/useCategories";
-import { useCreatePost } from "../../hooks/reactQuery/usePostsApi"; // ✅ Import mutation hook
+import { useCreatePost } from "../../hooks/reactQuery/usePostsApi";
 import useAuthStore from "../stores/useAuthStore";
 
-// ✅ Import categories hook
 const NewPost = () => {
   const history = useHistory();
   const [formData, setFormData] = useState({ title: "", description: "" });
@@ -17,16 +16,14 @@ const NewPost = () => {
 
   const { data: categories = [] } = useCategories();
   const { userId, organizationId } = useAuthStore.getState();
+  const { mutate: createPost, isPending } = useCreatePost();
 
-  const { mutate: createPost, isPending } = useCreatePost(); // ✅ use mutation
-
-  const formattedOptions = categories.map(category => ({
-    label: category.name,
-    value: category.id,
+  const formattedOptions = categories.map(({ name, id }) => ({
+    label: name,
+    value: id,
   }));
 
-  const handleChange = e => {
-    const { name, value } = e.target;
+  const handleChange = ({ target: { name, value } }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
@@ -41,17 +38,17 @@ const NewPost = () => {
 
     createPost(payload, {
       onSuccess: () => history.push("/"),
-      onError: error => Logger.error(error),
+      onError: Logger.error,
     });
   };
 
-  const handleSubmit = e => {
-    e.preventDefault();
+  const handleSubmit = event => {
+    event.preventDefault();
     handlePostSubmit("published");
   };
 
-  const handleSaveDraft = e => {
-    e.preventDefault();
+  const handleSaveDraft = event => {
+    event.preventDefault();
     handlePostSubmit("drafted");
   };
 
@@ -72,7 +69,7 @@ const NewPost = () => {
       onCategoryChange={setSelectedCategories}
       onChange={handleChange}
       onSaveDraft={handleSaveDraft}
-      onSubmit={handleSubmit} // optional to disable button while saving
+      onSubmit={handleSubmit}
     />
   );
 };

@@ -3,7 +3,7 @@
 class PostsController < ApplicationController
   def index
     posts = Post.includes(:categories, :user, :organization)
-      .where(organization_id: current_user.organization_id)
+      .where(organization_id: current_user.organization_id, status: "published")
 
     if params[:type].present?
       types = params[:type].split(",").map(&:strip).map(&:downcase)
@@ -69,7 +69,6 @@ class PostsController < ApplicationController
       return render_error("You are not authorized to edit this post.", :unauthorized)
     end
 
-    # Assign categories directly, separate from post_params
     if params[:post][:category_ids].present?
       post.categories = Category.where(id: params[:post][:category_ids])
     end

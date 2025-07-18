@@ -1,6 +1,15 @@
-// App.jsx
 import React from "react";
 
+import Login from "components/Authentication/Login";
+import Signup from "components/Authentication/Signup";
+import BlogPosts from "components/BlogPosts";
+import NoDataPage from "components/commons/NoDataPage";
+import PrivateRoute from "components/commons/PrivateRoute";
+import Posts from "components/posts";
+import Edit from "components/posts/Edit";
+import NewPost from "components/posts/NewPost";
+import Show from "components/posts/Show";
+import useAuthStore from "components/stores/useAuthStore";
 import { either, isEmpty, isNil } from "ramda";
 import { QueryClientProvider } from "react-query";
 import {
@@ -10,18 +19,7 @@ import {
   Redirect,
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-
-import Login from "./components/Authentication/Login";
-import Signup from "./components/Authentication/Signup";
-import BlogPosts from "./components/BlogPosts";
-import NoDataPage from "./components/commons/NoDataPage";
-import PrivateRoute from "./components/commons/PrivateRoute";
-import Posts from "./components/posts";
-import Edit from "./components/posts/Edit";
-import NewPost from "./components/posts/NewPost";
-import Show from "./components/posts/Show";
-import useAuthStore from "./components/stores/useAuthStore";
-import queryClient from "./utils/queryClient";
+import queryClient from "utils/queryClient";
 
 const App = () => {
   const authToken = useAuthStore(state => state.authToken);

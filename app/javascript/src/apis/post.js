@@ -13,7 +13,7 @@ const update = ({ slug, payload }) =>
     post: payload,
   });
 const fetchMyPosts = () => axios.get("/posts/my_posts");
-const destroy = slug => axios.delete(`/posts/${slug}`); // 👈 this is important
+const destroy = slug => axios.delete(`/posts/${slug}`);
 
 const postsApi = { fetch, create, show, update, fetchMyPosts, destroy };
 

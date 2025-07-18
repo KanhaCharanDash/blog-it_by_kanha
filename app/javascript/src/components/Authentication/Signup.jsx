@@ -42,7 +42,7 @@ const Signup = ({ history }) => {
         organization_id: selectedOrganization?.value,
       });
 
-      Toastr.success("Signup successful! Redirecting to dashboard...");
+      Toastr.success("Signup successful! Redirecting to  blogpost...");
       history.push("/");
     } catch (error) {
       logger.error(error);

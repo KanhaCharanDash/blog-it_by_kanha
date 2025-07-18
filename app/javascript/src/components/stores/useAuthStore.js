@@ -8,7 +8,7 @@ const useAuthStore = create(
       userId: null,
       userName: null,
       email: null,
-      organizationId: null, // ✅ only this
+      organizationId: null,
 
       setAuth: ({ authToken, userId, userName, email, organizationId }) =>
         set({ authToken, userId, userName, email, organizationId }),
