@@ -16,7 +16,6 @@ import CategorySidebar from "./CategorySidebar";
 import authApi from "../../apis/auth";
 import { resetAuthTokens } from "../../apis/axios";
 import useAuthStore from "../stores/useAuthStore";
-import useCategoryStore from "../stores/useCategoryStore";
 import usePostStore from "../stores/usePostStore";
 
 const Navbar = () => {
@@ -27,7 +26,6 @@ const Navbar = () => {
   const { showCategories, toggleSidebar } = usePostStore();
   const [showLogout, setShowLogout] = useState(false);
 
-  const { categories } = useCategoryStore();
   const { resetAuth } = useAuthStore.getState();
 
   const handleLogout = async () => {
@@ -100,11 +98,7 @@ const Navbar = () => {
       </div>
       {/* Category sidebar if toggled */}
       {showCategories && (
-        <CategorySidebar
-          categories={categories}
-          modalRef={modalRef}
-          ref={categorySidebarRef}
-        />
+        <CategorySidebar modalRef={modalRef} ref={categorySidebarRef} />
       )}
     </div>
   );

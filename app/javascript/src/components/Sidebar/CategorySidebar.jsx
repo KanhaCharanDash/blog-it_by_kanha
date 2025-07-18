@@ -2,32 +2,38 @@ import React, { forwardRef, useState } from "react";
 
 import { Input, Typography, Button, Modal, Toastr } from "@bigbinary/neetoui";
 
-import categoriesApi from "../../apis/category";
-import useCategoryStore from "../stores/useCategoryStore";
+import {
+  useCategories,
+  useCreateCategory,
+} from "../../hooks/reactQuery/useCategories";
 import usePostStore from "../stores/usePostStore";
 
 const CategorySidebar = forwardRef(({ modalRef }, ref) => {
-  const { categories, setCategory } = useCategoryStore();
   const { selectedCategories, toggleCategory } = usePostStore();
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
 
-  const handleAddCategory = async () => {
+  const { data: categories = [], isLoading } = useCategories();
+
+  const { mutate: createCategory, isLoading: isCreating } = useCreateCategory();
+
+  const handleAddCategory = () => {
     if (!newCategoryName.trim()) return;
 
-    try {
-      const {
-        data: { category },
-      } = await categoriesApi.create({ name: newCategoryName });
-
-      setCategory(category);
-      Toastr.success("Category added successfully");
-      setNewCategoryName("");
-      setIsAddModalOpen(false);
-    } catch {
-      Toastr.error("Failed to add category");
-    }
+    createCategory(
+      { name: newCategoryName },
+      {
+        onSuccess: () => {
+          Toastr.success("Category added successfully");
+          setNewCategoryName("");
+          setIsAddModalOpen(false);
+        },
+        onError: () => {
+          Toastr.error("Failed to add category");
+        },
+      }
+    );
   };
 
   return (
@@ -45,24 +51,28 @@ const CategorySidebar = forwardRef(({ modalRef }, ref) => {
           />
         </div>
         <div className="space-y-2 overflow-y-auto pr-1">
-          {categories.map(category => {
-            const isSelected = selectedCategories.some(
-              c => c.id === category.id
-            );
+          {isLoading ? (
+            <Typography>Loading...</Typography>
+          ) : (
+            categories.map(category => {
+              const isSelected = selectedCategories.some(
+                c => c.id === category.id
+              );
 
-            return (
-              <Button
-                key={category.id}
-                label={category.name}
-                size="small"
-                style="secondary"
-                className={`w-full justify-start ${
-                  isSelected ? "bg-blue-600 text-white" : "bg-gray-100"
-                }`}
-                onClick={() => toggleCategory(category)}
-              />
-            );
-          })}
+              return (
+                <Button
+                  key={category.id}
+                  label={category.name}
+                  size="small"
+                  style="secondary"
+                  className={`w-full justify-start ${
+                    isSelected ? "bg-blue-600 text-white" : "bg-gray-100"
+                  }`}
+                  onClick={() => toggleCategory(category)}
+                />
+              );
+            })
+          )}
         </div>
       </div>
       <Modal
@@ -96,8 +106,8 @@ const CategorySidebar = forwardRef(({ modalRef }, ref) => {
               onClick={() => setIsAddModalOpen(false)}
             />
             <Button
-              disabled={!newCategoryName.trim()}
-              label="Add"
+              disabled={!newCategoryName.trim() || isCreating}
+              label={isCreating ? "Adding..." : "Add"}
               onClick={handleAddCategory}
             />
           </div>
