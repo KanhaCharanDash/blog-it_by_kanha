@@ -5,59 +5,50 @@ import { useHistory, useParams } from "react-router-dom";
 
 import PostForm from "./PostForm";
 
-import postsApi from "../../apis/post";
+import { useCategories } from "../../hooks/reactQuery/useCategories";
+import { useShowPost, useUpdatePost } from "../../hooks/reactQuery/usePostsApi";
 import PageLoader from "../commons/PageLoader";
-import useCategoryStore from "../stores/useCategoryStore";
 
+// ✅ Import categories hook
 const Edit = () => {
   const { slug } = useParams();
   const history = useHistory();
-
-  const { categories } = useCategoryStore();
-
+  const { data: categories = [] } = useCategories();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    status: "drafted", // <-- added
+    status: "drafted",
     user_id: null,
     organization_id: null,
   });
-
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+  const { data: post, isLoading } = useShowPost(slug);
+  const { mutateAsync: updatePost } = useUpdatePost();
 
   const formattedOptions = categories.map(category => ({
     label: category.name,
     value: category.id,
   }));
 
-  const fetchPost = async () => {
-    try {
-      const {
-        data: { post },
-      } = await postsApi.show(slug);
+  useEffect(() => {
+    if (!post) return;
 
-      setFormData({
-        title: post.title,
-        description: post.description,
-        status: post.status || "drafted",
-        user_id: post.user_id,
-        organization_id: post.organization_id,
-      });
+    setFormData({
+      title: post.title,
+      description: post.description,
+      status: post.status || "drafted",
+      user_id: post.user_id,
+      organization_id: post.organization_id,
+    });
 
-      setSelectedCategories(
-        post.categories.map(cat => ({
-          label: cat.name,
-          value: cat.id,
-        }))
-      );
-    } catch (error) {
-      Logger.error("Error loading post for editing:", error);
-      history.replace("/");
-    } finally {
-      setLoading(false);
-    }
-  };
+    setSelectedCategories(
+      post.categories.map(cat => ({
+        label: cat.name,
+        value: cat.id,
+      }))
+    );
+  }, [post]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -72,7 +63,7 @@ const Edit = () => {
     };
 
     try {
-      await postsApi.update({ slug, payload });
+      await updatePost({ slug, payload });
       history.push(`/posts/${slug}`);
     } catch (error) {
       Logger.error("Error updating post:", error);
@@ -83,11 +74,7 @@ const Edit = () => {
     history.goBack();
   };
 
-  useEffect(() => {
-    fetchPost();
-  }, [slug]);
-
-  if (loading) return <PageLoader />;
+  if (isLoading) return <PageLoader />;
 
   return (
     <PostForm

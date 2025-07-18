@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import {
   Typography,
@@ -10,62 +10,40 @@ import {
 import { useHistory } from "react-router-dom";
 
 import PageLoader from "./commons/PageLoader";
-import Navbar from "./Sidebar"; // 👈 Import Navbar
+import Navbar from "./Sidebar";
 
-import postsApi from "../apis/post";
+import {
+  useMyPosts,
+  useUpdatePost,
+  useDeletePost,
+} from "../hooks/reactQuery/usePostsApi";
 
 const BlogPosts = () => {
-  const [loading, setLoading] = useState(true);
-  const [posts, setPosts] = useState([]);
   const history = useHistory();
   const { Menu, MenuItem, Divider } = Dropdown;
 
-  // Fetch current user's posts
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await postsApi.fetchMyPosts();
-        setPosts(response.data.posts);
-      } catch (error) {
-        logger.error("Failed to fetch posts", error);
-      } finally {
-        setLoading(false);
+  const { data: posts = [], isLoading, isError } = useMyPosts();
+
+  const { mutate: updatePost } = useUpdatePost();
+  const { mutate: deletePost } = useDeletePost();
+
+  const handleStatusChange = (slug, newStatus) => {
+    updatePost(
+      { slug, payload: { status: newStatus } },
+      {
+        onSuccess: () => Toastr.success("Post status updated successfully."),
+        onError: () => Toastr.error("Failed to update post status."),
       }
-    };
-
-    fetchPosts();
-  }, []);
-
-  const handleStatusChange = async (slug, newStatus) => {
-    try {
-      await postsApi.update({ slug, payload: { status: newStatus } });
-      const updatedPostRes = await postsApi.show(slug);
-      const updatedPost = updatedPostRes.data.post;
-      setPosts(prev =>
-        prev.map(post => (post.slug === slug ? updatedPost : post))
-      );
-
-      Toastr.success(
-        `Post ${
-          newStatus === "published" ? "published" : "unpublished"
-        } successfully.`
-      );
-    } catch (error) {
-      logger.error(error);
-      Toastr.error("Failed to update post status.");
-    }
+    );
   };
 
-  const handleDelete = async slug => {
-    if (!window.confirm("Are you sure you want to delete this post?")) return;
-
-    try {
-      await postsApi.destroy(slug);
-      setPosts(prev => prev.filter(p => p.slug !== slug));
-      Toastr.success("Post deleted successfully.");
-    } catch (error) {
-      logger.error(error);
-      Toastr.error("Something went wrong while deleting the post.");
+  const handleDelete = slug => {
+    if (window.confirm("Are you sure you want to delete this post?")) {
+      deletePost(slug, {
+        onSuccess: () => Toastr.success("Post deleted successfully."),
+        onError: () =>
+          Toastr.error("Something went wrong while deleting the post."),
+      });
     }
   };
 
@@ -140,13 +118,13 @@ const BlogPosts = () => {
     },
   ];
 
-  if (loading) return <PageLoader />;
+  if (isLoading) return <PageLoader />;
+
+  if (isError) return <div>Failed to load posts</div>;
 
   return (
     <div className="flex h-screen">
-      {/* Sidebar */}
       <Navbar />
-      {/* Main Content */}
       <div className="flex-1 overflow-y-auto px-6 py-6">
         <Typography className="mb-2" style="h2">
           My blog posts

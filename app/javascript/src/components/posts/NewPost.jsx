@@ -1,4 +1,3 @@
-// components/Posts/NewPost.jsx
 import React, { useState } from "react";
 
 import Logger from "js-logger";
@@ -6,17 +5,20 @@ import { useHistory } from "react-router-dom";
 
 import PostForm from "./PostForm";
 
-import postsApi from "../../apis/post";
+import { useCategories } from "../../hooks/reactQuery/useCategories";
+import { useCreatePost } from "../../hooks/reactQuery/usePostsApi"; // ✅ Import mutation hook
 import useAuthStore from "../stores/useAuthStore";
-import useCategoryStore from "../stores/useCategoryStore";
 
+// ✅ Import categories hook
 const NewPost = () => {
   const history = useHistory();
   const [formData, setFormData] = useState({ title: "", description: "" });
   const [selectedCategories, setSelectedCategories] = useState([]);
 
-  const { categories } = useCategoryStore();
+  const { data: categories = [] } = useCategories();
   const { userId, organizationId } = useAuthStore.getState();
+
+  const { mutate: createPost, isPending } = useCreatePost(); // ✅ use mutation
 
   const formattedOptions = categories.map(category => ({
     label: category.name,
@@ -28,21 +30,19 @@ const NewPost = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handlePostSubmit = async status => {
+  const handlePostSubmit = status => {
     const payload = {
       ...formData,
-      status, // "published" or "drafted"
+      status,
       user_id: userId,
       organization_id: organizationId,
       category_ids: selectedCategories.map(option => option.value),
     };
 
-    try {
-      await postsApi.create(payload);
-      history.push("/");
-    } catch (error) {
-      Logger.error(error);
-    }
+    createPost(payload, {
+      onSuccess: () => history.push("/"),
+      onError: error => Logger.error(error),
+    });
   };
 
   const handleSubmit = e => {
@@ -65,13 +65,14 @@ const NewPost = () => {
     <PostForm
       categories={formattedOptions}
       description={formData.description}
+      isSubmitting={isPending}
       selectedCategories={selectedCategories}
       title={formData.title}
       onCancel={handleCancel}
       onCategoryChange={setSelectedCategories}
       onChange={handleChange}
       onSaveDraft={handleSaveDraft}
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit} // optional to disable button while saving
     />
   );
 };

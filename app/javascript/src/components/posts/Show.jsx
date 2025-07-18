@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { Typography, Avatar } from "@bigbinary/neetoui";
 import Logger from "js-logger";
@@ -6,10 +6,10 @@ import { useParams } from "react-router-dom";
 
 import CategoryBadgeList from "./CategoryBadgeList";
 
-import postsApi from "../../apis/post";
+import { useShowPost } from "../../hooks/reactQuery/usePostsApi";
 import Header from "../commons/Header";
 import PageLoader from "../commons/PageLoader";
-import Navbar from "../Sidebar"; // 👈 Import Navbar
+import Navbar from "../Sidebar";
 
 const formatDate = dateString => {
   const options = { day: "numeric", month: "long", year: "numeric" };
@@ -19,27 +19,11 @@ const formatDate = dateString => {
 
 const Show = () => {
   const { slug } = useParams();
-  const [post, setPost] = useState({ title: "", description: "" });
-  const [loading, setLoading] = useState(true);
 
-  const fetchPost = async () => {
-    try {
-      const {
-        data: { post },
-      } = await postsApi.show(slug);
-      setPost(post);
-    } catch (error) {
-      Logger.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: post, isLoading } = useShowPost(slug);
 
-  useEffect(() => {
-    fetchPost();
-  }, [slug]);
-
-  if (loading) return <PageLoader />;
+  if (isLoading || !post) return <PageLoader />;
+  Logger.info("Post data:", post);
 
   return (
     <div className="flex min-h-screen">
