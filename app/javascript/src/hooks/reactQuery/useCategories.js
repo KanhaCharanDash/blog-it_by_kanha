@@ -1,23 +1,20 @@
-import { useQuery, useMutation, useQueryClient } from "react-query";
+import { QUERY_KEYS } from "constants/query";
 
-import categoriesApi from "../../apis/category";
+import categoriesApi from "apis/category";
+import { useQuery, useMutation } from "react-query";
+import queryClient from "utils/queryClient";
 
 export const useCategories = () =>
-  useQuery(["categories"], async () => {
+  useQuery([QUERY_KEYS.CATEGORIES], async () => {
     const res = await categoriesApi.fetch();
 
     return res.data;
   });
 
-export const useCreateCategory = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async payload => {
-      await categoriesApi.create(payload);
-    },
+export const useCreateCategory = () =>
+  useMutation({
+    mutationFn: categoriesApi.create,
     onSuccess: () => {
-      queryClient.invalidateQueries(["categories"]);
+      queryClient.invalidateQueries([QUERY_KEYS.CATEGORIES]);
     },
   });
-};

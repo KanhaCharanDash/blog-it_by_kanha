@@ -1,19 +1,18 @@
 import React, { useEffect } from "react";
 
 import classnames from "classnames";
+import Header from "components/commons/Header";
+import NoDataPage from "components/commons/NoDataPage";
+import PageLoader from "components/commons/PageLoader";
+import Navbar from "components/Sidebar";
+import usePostStore from "components/stores/usePostStore";
+import { usePosts } from "hooks/reactQuery/usePostsApi";
 import queryString from "query-string";
 import { isEmpty } from "ramda";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router-dom";
 
 import PostCard from "./PostCard";
-
-import { usePosts } from "../../hooks/reactQuery/usePostsApi";
-import Header from "../commons/Header";
-import NoDataPage from "../commons/NoDataPage";
-import PageLoader from "../commons/PageLoader";
-import Navbar from "../Sidebar";
-import usePostStore from "../stores/usePostStore";
 
 const Posts = () => {
   const { t } = useTranslation();
